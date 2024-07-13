@@ -1,5 +1,5 @@
 public class Main {
-    public static void main(String[] args) {
-        Mp3Formatter.removeAd("WXXLER_-_Demons_In_My_Blood_(ru.soundmax.me).mp3"); // WXXLER_-_Demons_In_My_Blood.mp3
+    public static void main(String[] args) throws Mp3FormatException {
+        System.out.println(Mp3Formatter.removeAd("HXVRMXN_-_スピードデーモン.mp3"));
     }
 }
