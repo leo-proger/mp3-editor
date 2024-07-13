@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class Mp3FormatterTest {
 
@@ -22,5 +23,11 @@ public class Mp3FormatterTest {
                 Mp3Formatter.removeAd("zecki, Phonkha_-_SLAUGHTER_HOUSE_2_(EEMUSIC.ru).mp3"),
                 "zecki, Phonkha_-_SLAUGHTER_HOUSE_2.mp3"
         );
+        assertThrows(Mp3FormatException.class, () -> Mp3Formatter.removeAd("HXVRMXN_-_スピードデーモン.mp3"));
+    }
+
+    @Test
+    public void formatMp3Filename() {
+        // TODO: Написать тесты
     }
 }
