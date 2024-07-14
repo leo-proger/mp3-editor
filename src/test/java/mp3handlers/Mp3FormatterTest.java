@@ -43,7 +43,22 @@ public class Mp3FormatterTest extends Mp3Formatter {
 
     @Test
     public void testFormatMp3Filename() {
-        // TODO: Написать тесты
+        assertEquals(
+                Mp3Formatter.formatMp3Filename("Смысловые Галлюцинации - Вечно молодой (Phonk remix).mp3"),
+                "Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3"
+        );
+        assertEquals(
+                Mp3Formatter.formatMp3Filename("XvallariX - Ben Gunn.mp3"),
+                "XvallariX_-_Ben_Gunn.mp3"
+        );
+        assertEquals(
+                Mp3Formatter.formatMp3Filename("XHNORT_-_レプリカント.mp3"),
+                "XHNORT_-_レプリカント.mp3"
+        );
+        assertEquals(
+                Mp3Formatter.formatMp3Filename("TRVNSPORTER, G.P.R Beat_-_Champion.mp3"),
+                "TRVNSPORTER, G.P.R_Beat_-_Champion.mp3"
+        );
     }
 
     @Test
