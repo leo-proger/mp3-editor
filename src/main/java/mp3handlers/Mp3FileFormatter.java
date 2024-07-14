@@ -11,12 +11,12 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
-public class Mp3Formatter {
+public class Mp3FileFormatter {
     private final static Set<String> BLACKLIST = Set.of(
             "(?i)\\(ru.soundmax.me\\)", "(?i)\\(AxeMusic.ru\\)", "(?i)\\(musmore.com\\)", "(?i)\\(remix-x.ru\\)",
             "(?i)\\(MP3Ball.ru\\)", "(?i)\\(Byfet.com\\)", "(?i)\\(EEMUSIC.ru\\)", "(?i)\\(Music Video\\)",
@@ -57,31 +57,27 @@ public class Mp3Formatter {
             "_feat_",
             "_and_",
     };
+    private Path mp3File;
+    private String newFilename;
 
-    private static boolean isValidMp3Filename(String filename) {
-        String regex = "^(?:.+\\\\)?(.+)_-_(.+)\\.mp3$";
+    private boolean isValidMp3Filename(String filename) {
+        String regex = "^(?![/\\\\])(?=.*\\.mp3$)(?:([^/\\\\]+)_-_([^/\\\\]+)|([^/\\\\]+) - ([^/\\\\]+))\\.mp3$";
         return filename.matches(regex);
     }
 
     /**
-     * Метод удаляет рекламу, находящуюся в BLACKLIST, игнорируя регистр, и удаляет в конце, перед ".mp3", все, кроме цифр, букв и закрывающей скобки
-     *
-     * @param mp3FileName имя mp3 файла, из которого нужно убрать рекламу
-     * @return строка, из которой удалена реклама
+     * Метод удаляет рекламу, находящуюся в BLACKLIST, игнорируя регистр, и удаляет в конце, перед ".mp3", все, кроме цифр, букв и закрывающей скобки (остатки от рекламы)
      */
-    protected static String removeAd(String mp3FileName) throws Mp3FormatException {
-        // Удаляем все подстроки из списка и лишние пробелы
-        String result = BLACKLIST.stream()
-                .reduce(mp3FileName, (str, pattern) -> str.replaceAll(pattern, ""))
-                .trim();
-
-        // Удаляем все символы перед .mp3, кроме букв и закрывающей скобки
-        result = result.replaceAll("(?i)[^a-z0-9)]+\\.mp3$", ".mp3");
-
-        if (result.split("_-_").length == 2 || result.split(" - ").length == 2) {
-            return result;
+    protected void removeAd() throws Mp3FileFormatException {
+        if (!isValidMp3Filename(newFilename)) {
+            throw new Mp3FileFormatException(mp3File);
         }
-        throw new Mp3FormatException(mp3FileName);
+        // Удаляем все подстроки из списка, лишние пробелы и все символы из перед mp3, кроме букв и закрывающей скобки
+        newFilename = BLACKLIST.stream()
+                .reduce(newFilename, (str, pattern) -> str.replaceAll(pattern, ""))
+                .trim()
+                .replaceAll("(?i)[^a-zа-яA-ZА-Я0-9)]+\\.mp3$", ".mp3");
+
     }
 
     /**
@@ -92,15 +88,15 @@ public class Mp3Formatter {
      * 2. Заменяются все прочие разделители исполнителей, указанные в ARTIST_SEPARATORS, на запятую с пробелом
      * <p>
      * 3. Заменяется имя исполнителя на корректное, если требуется
-     *
-     * @param mp3FileName имя mp3 файла, которое нужно отформатировать
-     * @return отформатированное имя mp3 файла
      */
-    protected static String formatMp3Filename(String mp3FileName) {
-        mp3FileName = mp3FileName.replaceAll(" ", "_").replaceAll(",_", ", ");
+    protected void formatMp3Filename() throws Mp3FileFormatException {
+        if (!isValidMp3Filename(newFilename)) {
+            throw new Mp3FileFormatException(mp3File);
+        }
+        String formattedFilename = newFilename.replaceAll(" ", "_").replaceAll(",_", ", ");
 
         // Разделяем на часть с исполнителями и часть с названием трека
-        String[] parts = mp3FileName.split("_-_");
+        String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
@@ -121,31 +117,26 @@ public class Mp3Formatter {
                 leftWithCorrectedArtistNames.add(artist);
             }
         }
-        // Возвращаем объединенные части с исполнителями и названием трека
-        return String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
+        // Определяем новое отформатированное имя файла
+        newFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
     }
 
 
     /**
-     * Метод добавляет mp3 файлу метаданные (название трека и исполнителей), исходя из имени mp3 файла. Форматирование производится согласно такому формату:
+     * Метод добавляет mp3 файлу метаданные (название трека и исполнителей), исходя из имени файла. Форматирование производится согласно такому формату:
      * <p>
      * 1. Заменяются все нижние подчеркивания на пробелы
      * <p>
      * 2. Заменяется запятая на общепринятый разделитель исполнителей в метаданных - точка с запятой
-     * @param mp3FileName имя mp3 файла, которому нужно добавить отформатированные метаданные
      */
-    protected static void formatMetadata(String mp3FileName) throws IOException, Mp3FormatException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException {
-        // Проверяем соответствие имени mp3 файла определенному формату
-        if (!isValidMp3Filename(mp3FileName)) {
-            throw new Mp3FormatException(mp3FileName);
+    protected void formatMetadata() throws IOException, Mp3FileFormatException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException {
+        if (!isValidMp3Filename(newFilename)) {
+            throw new Mp3FileFormatException(mp3File);
         }
-        File file = new File(mp3FileName);
-        if (!file.exists()) {
-            throw new FileNotFoundException("Файл \"" + mp3FileName + "\" не найден");
-        }
-        AudioFile audioFile = AudioFileIO.read(file);
+        // Преобразуем строку в объект файла, чтобы можно было работать с метаданными
+        AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
         Tag tag = audioFile.getTag();
-        String[] parts = file.getName().replace(".mp3", "").split("_-_");
+        String[] parts = newFilename.replace(".mp3", "").split("_-_");
 
         // Проверяем есть ли исполнители, у которых не надо заменять нижнее подчеркивание на пробел
         Set<String> artistsForMetadata = new LinkedHashSet<>();
@@ -174,10 +165,13 @@ public class Mp3Formatter {
         audioFile.commit();
     }
 
-    public static String format(String mp3FileName) throws Mp3FormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
-        String result = removeAd(mp3FileName);
-        result = formatMp3Filename(result);
-        formatMetadata(result);
-        return result;
+    public void format(Path mp3File) throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
+        this.mp3File = mp3File;
+        removeAd();
+        formatMp3Filename();
+        formatMetadata();
+
+        // Переименование файла на файл с отформатированным именем
+        Files.move(mp3File, Path.of(mp3File.getParent() + mp3File.getFileSystem().getSeparator() + newFilename));
     }
 }
