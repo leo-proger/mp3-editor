@@ -68,7 +68,7 @@ public class Mp3FileFormatter {
     /**
      * Метод удаляет рекламу, находящуюся в BLACKLIST, игнорируя регистр, и удаляет в конце, перед ".mp3", все, кроме цифр, букв и закрывающей скобки (остатки от рекламы)
      */
-    protected void removeAd() throws Mp3FileFormatException {
+    private void removeAd() throws Mp3FileFormatException {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormatException(mp3File);
         }
@@ -89,7 +89,7 @@ public class Mp3FileFormatter {
      * <p>
      * 3. Заменяется имя исполнителя на корректное, если требуется
      */
-    protected void formatMp3Filename() throws Mp3FileFormatException {
+    private void formatMp3Filename() throws Mp3FileFormatException {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormatException(mp3File);
         }
@@ -129,7 +129,7 @@ public class Mp3FileFormatter {
      * <p>
      * 2. Заменяется запятая на общепринятый разделитель исполнителей в метаданных - точка с запятой
      */
-    protected void formatMetadata() throws IOException, Mp3FileFormatException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException {
+    private void formatMetadata() throws IOException, Mp3FileFormatException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormatException(mp3File);
         }
@@ -167,11 +167,13 @@ public class Mp3FileFormatter {
 
     public void format(Path mp3File) throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         this.mp3File = mp3File;
+        newFilename = mp3File.getFileName().toString();
+
         removeAd();
         formatMp3Filename();
         formatMetadata();
 
         // Переименование файла на файл с отформатированным именем
-        Files.move(mp3File, Path.of(mp3File.getParent() + mp3File.getFileSystem().getSeparator() + newFilename));
+        Files.move(mp3File, mp3File.getParent().resolve(newFilename));
     }
 }

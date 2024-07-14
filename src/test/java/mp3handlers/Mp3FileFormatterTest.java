@@ -1,32 +1,76 @@
 package mp3handlers;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.TagException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Mp3FileFormatterTest {
     // TODO: Убрать логи, которые пишет jaudiotagger
 
-//    private static Mp3FileFormatter formatter;
-//    private static final String defaultParentPath = "X:\\Music\\";
-//
-//    @BeforeAll
-//    public static void setup() {
-//        formatter = new Mp3FileFormatter();
-//    }
-//
-//    @Test
-//    public void testFormatFilename() throws Mp3FileFormatException {
-//
-//        assertEquals(
-//                formatter.format(Path.of(defaultParentPath, "WXXLER_-_Demons_In_My_Blood_(Phonk_remix)_(ru.soundmax.me).mp3"),
-//                "WXXLER_-_Demons_In_My_Blood_(Phonk_remix).mp3"
-//        );
-//
-//        assertThrows(Mp3FileFormatException.class, () -> Mp3FileFormatter.removeAd("HXVRMXN_-_スピードデーモン.mp3"));
-//    }
+    @TempDir
+    Path tempDir;
+
+    private static Mp3FileFormatter formatter;
+
+    @BeforeEach
+    public void setup() {
+        formatter = new Mp3FileFormatter();
+    }
+
+    @Test
+    public void testRenameFile() throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
+        // Тест 1
+        Path originalFile1 = tempDir.resolve("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\lxst cxntury, Цой - Кончится Лето__--_-(remix-x.ru).mp3");
+
+        formatter.format(originalFile1);
+
+        Path newFile1 = tempDir.resolve("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\LXST_CXNTURY, Цой_-_Кончится_Лето.mp3");
+        assertTrue(Files.exists(newFile1));
+        assertFalse(Files.exists(originalFile1));
+
+        // Тест 2
+        Path originalFile2 = tempDir.resolve("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video).mp3");
+
+        formatter.format(originalFile2);
+
+        Path newFile2 = tempDir.resolve("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3");
+        assertTrue(Files.exists(newFile2));
+        assertFalse(Files.exists(originalFile2));
+
+        // Переименовываем обратно для последующих тестов
+        Files.move(newFile1, originalFile1);
+        Files.move(newFile2, originalFile2);
+    }
+
+    @Test
+    public void testEditMetadata() throws InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormatException, InvalidAudioFrameException, ReadOnlyFileException {
+        Path mp3File = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\ЛЮБЭ, 37R - Давай за жизнь (Phonk Remix).mp3");
+        Path newMp3File = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\ЛЮБЭ, 37R_-_Давай_за_жизнь_(Phonk_Remix).mp3");
+
+        Mp3File editedMp3File = new Mp3File(mp3File);
+        ID3v2 tag = editedMp3File.getId3v2Tag();
+
+        formatter.format(mp3File);
+
+        assertEquals(tag.getArtist(), "ЛЮБЭ; 37R");
+        assertEquals(tag.getTitle(), "Давай за жизнь (Phonk Remix)");
+
+        // Переименовываем обратно для последующих тестов
+        Files.move(newMp3File, mp3File);
+    }
 }

@@ -15,6 +15,7 @@
     </properties>
 
     <dependencies>
+        <!-- Для редактирования метаданных -->
         <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
@@ -27,5 +28,13 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Для редактирования метаданных (в тестах) -->
+        <dependency>
+            <groupId>com.mpatric</groupId>
+            <artifactId>mp3agic</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
     </dependencies>
 </project>
