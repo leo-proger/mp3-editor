@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Mp3FileFormatter {
+
+    // Отключаем логирование библиотеки jaudiotagger
     static {
         var loggers = new Logger[]{Logger.getLogger("org.jaudiotagger")};
         for (Logger logger : loggers) {
@@ -26,11 +28,18 @@ public class Mp3FileFormatter {
         }
     }
 
+    /**
+     * Реклама, которую нужно удалить из имени mp3 файла
+     */
     private final static Set<String> BLACKLIST = Set.of(
             "(?i)\\(ru.soundmax.me\\)", "(?i)\\(AxeMusic.ru\\)", "(?i)\\(musmore.com\\)", "(?i)\\(remix-x.ru\\)",
             "(?i)\\(MP3Ball.ru\\)", "(?i)\\(Byfet.com\\)", "(?i)\\(EEMUSIC.ru\\)", "(?i)\\(Music Video\\)",
             "(?i)\\(Official Music Video\\)"
     );
+
+    /**
+     * Ключ - возможное написание исполнителя, значение - корректное написание исполнителя (при проверке возможного написания регистр не учитывается, то есть если в имени файла будет "swerve" или "Swerve", то в любом случае программа заменит это на "$werve")
+     */
     private static final Map<String, String> CORRECT_ARTIST_NAMES = new HashMap<>() {{
         put("lxst_cxntury", "LXST_CXNTURY");
         put("vali_beats", "VALI$BEATS");
@@ -53,10 +62,16 @@ public class Mp3FileFormatter {
         put("vvpskvd.", "vvpskvd");
     }};
 
-    // Исполнители, у которых не нужно убирать нижнее подчеркивание при добавлении в метаданные
+    /**
+     * Исполнители, у которых не нужно убирать нижнее подчеркивание при добавлении в метаданные
+     */
     private static final Set<String> ARTISTS_EXCEPTIONS = Set.of(
             "boneles_s"
     );
+
+    /**
+     * Разделители исполнителей, которые нужно заменить на точку с запятой, чтобы было единообразие
+     */
     private static final String[] ARTIST_SEPARATORS = {
             "_x_",
             "_X_",
@@ -176,6 +191,7 @@ public class Mp3FileFormatter {
 
     /**
      * Метод запускает удаление рекламы, форматирование имени mp3 файла, форматирование метаданных mp3 файла и сохраняет изменения
+     *
      * @param mp3File файл mp3, который нужно отформатировать
      * @throws Mp3FileFormatException ошибка форматирования mp3 файла
      */
