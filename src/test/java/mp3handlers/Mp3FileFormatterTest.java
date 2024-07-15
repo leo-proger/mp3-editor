@@ -55,6 +55,22 @@ public class Mp3FileFormatterTest {
         // Переименовываем обратно для последующих тестов
         Files.move(newFile1, originalFile1);
         Files.move(newFile2, originalFile2);
+
+        // Тест 3
+        Path filename = Path.of("HXVRMXN.mp3");
+        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename));
+
+        // Тест 4
+        Path filename2 = Path.of("HXVRMXN- .mp3");
+        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename2));
+
+        // Тест 5
+        Path filename3 = Path.of("HXVRMXN -j.mp3");
+        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename3));
+
+        // Тест 6
+        Path filename4 = Path.of("HXVRMXN-.mp3");
+        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename4));
     }
 
     @Test
