@@ -3,20 +3,17 @@ package mp3handlers;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import com.sun.jna.platform.win32.KnownFolders;
-import com.sun.jna.platform.win32.Shell32Util;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-public class Mp3Manager {
-    private static final Path SOURCE_PATH = Paths.get(Shell32Util.getKnownFolderPath(KnownFolders.FOLDERID_Downloads));
-    private static final Path TARGET_PATH = Paths.get("X:\\Music");
+import static main.Main.SOURCE_PATH;
+import static main.Main.TARGET_PATH;
 
+public class Mp3Manager {
     private final static Mp3FileFormatter formatter;
 
     static {
@@ -27,7 +24,7 @@ public class Mp3Manager {
      * Метод форматирует каждый mp3 файл в SOURCE_PATH
      */
     private static void formatFiles() {
-        try (Stream<Path> paths = Files.walk(SOURCE_PATH)) {
+        try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
             paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3"))
                     .forEach(path -> {
@@ -48,7 +45,7 @@ public class Mp3Manager {
      * Метод перемещает все mp3 файлы из SOURCE_PATH в TARGET_PATH
      */
     private static void moveMp3Files() {
-        try (Stream<Path> paths = Files.walk(SOURCE_PATH)) {
+        try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
             paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3"))
                     .forEach(Mp3Manager::moveAndCheckMp3File);
