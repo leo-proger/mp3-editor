@@ -15,8 +15,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Mp3FileFormatter {
+    static {
+        var loggers = new Logger[]{Logger.getLogger("org.jaudiotagger")};
+        for (Logger logger : loggers) {
+            logger.setLevel(Level.OFF);
+        }
+    }
+
     private final static Set<String> BLACKLIST = Set.of(
             "(?i)\\(ru.soundmax.me\\)", "(?i)\\(AxeMusic.ru\\)", "(?i)\\(musmore.com\\)", "(?i)\\(remix-x.ru\\)",
             "(?i)\\(MP3Ball.ru\\)", "(?i)\\(Byfet.com\\)", "(?i)\\(EEMUSIC.ru\\)", "(?i)\\(Music Video\\)",

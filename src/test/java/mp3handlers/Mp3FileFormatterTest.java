@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Mp3FileFormatterTest {
-    // TODO: Убрать логи, которые пишет jaudiotagger
 
     @TempDir
     Path tempDir;
