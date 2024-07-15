@@ -174,7 +174,12 @@ public class Mp3FileFormatter {
         audioFile.commit();
     }
 
-    public void format(Path mp3File) throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
+    /**
+     * Метод запускает удаление рекламы, форматирование имени mp3 файла, форматирование метаданных mp3 файла и сохраняет изменения
+     * @param mp3File файл mp3, который нужно отформатировать
+     * @throws Mp3FileFormatException ошибка форматирования mp3 файла
+     */
+    public void format(Path mp3File) throws Mp3FileFormatException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
         this.mp3File = mp3File;
         newFilename = mp3File.getFileName().toString();
 

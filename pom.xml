@@ -22,6 +22,7 @@
             <version>3.0.1</version>
         </dependency>
 
+        <!-- Для тестов -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -34,6 +35,19 @@
             <groupId>com.mpatric</groupId>
             <artifactId>mp3agic</artifactId>
             <version>0.9.1</version>
+        </dependency>
+
+        <!-- Для определения пути к папке загрузок -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>5.13.0</version>
         </dependency>
 
     </dependencies>
