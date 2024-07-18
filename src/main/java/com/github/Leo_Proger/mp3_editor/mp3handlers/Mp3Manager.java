@@ -103,7 +103,6 @@ public class Mp3Manager {
         } catch (Exception e) {
             LOGGER.error("Произошла ошибка при выводе измененных треков");
         }
-        System.out.println("lol");
     }
 
     public static void run(boolean moveFiles) {
