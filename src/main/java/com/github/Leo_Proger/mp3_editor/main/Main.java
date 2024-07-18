@@ -1,8 +1,8 @@
-package main;
+package com.github.Leo_Proger.mp3_editor.main;
 
+import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3Manager;
 import com.sun.jna.platform.win32.KnownFolders;
 import com.sun.jna.platform.win32.Shell32Util;
-import mp3handlers.Mp3Manager;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

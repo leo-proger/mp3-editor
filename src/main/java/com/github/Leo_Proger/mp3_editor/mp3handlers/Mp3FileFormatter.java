@@ -1,4 +1,4 @@
-package mp3handlers;
+package com.github.Leo_Proger.mp3_editor.mp3handlers;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -60,13 +60,17 @@ public class Mp3FileFormatter {
         put("finivoid", "FINIVOID");
         put("oskalizator.", "oskalizator");
         put("vvpskvd.", "vvpskvd");
+        put("westliberty's", "WESTLIBERTY'S");
+        put("westlibertys", "WESTLIBERTY'S");
+        put("westliberty s", "WESTLIBERTY'S");
     }};
 
     /**
      * Исполнители, у которых не нужно убирать нижнее подчеркивание при добавлении в метаданные
      */
     private static final Set<String> ARTISTS_EXCEPTIONS = Set.of(
-            "boneles_s"
+            "boneles_s",
+            "rex_incc"
     );
 
     /**
@@ -124,7 +128,7 @@ public class Mp3FileFormatter {
         String left = parts[0];
         String right = parts[1];
 
-        // Заменяем все прочие разделители исполнителей на ", "
+        // Заменяем все прочие разделители исполнителей на запятую с пробелом
         for (String artistSeparator : ARTIST_SEPARATORS) {
             if (left.contains(artistSeparator))
                 left = left.replaceAll(artistSeparator, ", ");

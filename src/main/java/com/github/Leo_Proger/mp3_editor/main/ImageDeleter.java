@@ -1,4 +1,7 @@
-package main;
+package com.github.Leo_Proger.mp3_editor.main;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,6 +9,11 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public class ImageDeleter {
+    private static final Logger LOGGER;
+
+    static {
+        LOGGER = LoggerFactory.getLogger(ImageDeleter.class);
+    }
 
     /**
      * Метод, удаляющий ненужные изображения в папке (обложки для треков, которые я скачиваю из интернета)
@@ -21,7 +29,7 @@ public class ImageDeleter {
                 try {
                     Files.delete(file);
                 } catch (IOException e) {
-                    System.err.println("Ошибка при удалении файла \"" + file.getFileName() + "\"");
+                    LOGGER.error("Ошибка при удалении файла \"{}\"", file.getFileName());
                 }
             });
         } catch (IOException e) {

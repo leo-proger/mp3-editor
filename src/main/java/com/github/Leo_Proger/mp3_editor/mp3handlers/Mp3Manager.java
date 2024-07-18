@@ -1,8 +1,10 @@
-package mp3handlers;
+package com.github.Leo_Proger.mp3_editor.mp3handlers;
 
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,13 +12,15 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import static main.Main.SOURCE_PATH;
-import static main.Main.TARGET_PATH;
+import static com.github.Leo_Proger.mp3_editor.main.Main.SOURCE_PATH;
+import static com.github.Leo_Proger.mp3_editor.main.Main.TARGET_PATH;
 
 public class Mp3Manager {
     private final static Mp3FileFormatter formatter;
+    private static final Logger LOGGER;
 
     static {
+        LOGGER = LoggerFactory.getLogger(Mp3FileFormatter.class);
         formatter = new Mp3FileFormatter();
     }
 
@@ -31,13 +35,13 @@ public class Mp3Manager {
                         try {
                             formatter.format(path);
                         } catch (Mp3FileFormatException e) {
-                            System.err.println("Ошибка форматирования файла \"" + path.getFileName() + "\"");
+                            LOGGER.error("Ошибка форматирования файла \"{}\"", path.getFileName());
                         } catch (Exception e) {
-                            System.err.println("Ошибка при форматировании файла \"" + path.getFileName() + "\"");
+                            LOGGER.error("Ошибка при форматировании файла \"{}\"", path.getFileName());
                         }
                     });
         } catch (IOException e) {
-            System.err.println("Ошибка при чтении папки");
+            LOGGER.error("Ошибка при чтении папки");
         }
     }
 
@@ -50,7 +54,7 @@ public class Mp3Manager {
                     .filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3"))
                     .forEach(Mp3Manager::moveAndCheckMp3File);
         } catch (IOException e) {
-            System.err.println("Ошибка при чтении папки");
+            LOGGER.error("Ошибка при чтении папки");
         }
     }
 
@@ -67,14 +71,14 @@ public class Mp3Manager {
 
             // Перемещение файла, если он не существует в целевой папке
             if (Files.exists(TARGET_PATH.resolve(source.getFileName()))) {
-                System.err.println("Файл \"" + source.getFileName() + "\" уже существует в целевой папке.");
+                LOGGER.error("Файл \"{}\" уже существует в целевой папке.", source.getFileName());
             } else {
                 Files.move(source, TARGET_PATH.resolve(source.getFileName()));
             }
         } catch (InvalidDataException | UnsupportedTagException e) {
-            System.err.println("Файл \"" + source.getFileName() + "\" поврежден.");
+            LOGGER.error("Файл \"{}\" поврежден.", source.getFileName());
         } catch (IOException e) {
-            System.err.println("Ошибка при перемещении файла \"" + source.getFileName() + "\"");
+            LOGGER.error("Ошибка при перемещении файла \"{}\"", source.getFileName());
         }
     }
 
