@@ -18,6 +18,9 @@ public class Main {
         exitProgram();
     }
 
+    /**
+     * Отсчитывает 5 секунд и выходит
+     */
     private static void exitProgram() {
         System.out.print("Выход через: ");
         for (int i = 5; i >= 0; i--) {

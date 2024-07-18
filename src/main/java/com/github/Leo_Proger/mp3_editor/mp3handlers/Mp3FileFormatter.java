@@ -19,6 +19,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Mp3FileFormatter {
+    /**
+     * Список измененных треков, чтобы в конце программы вывести сводку
+     */
+    public final static List<Path> changedTracks = new LinkedList<>();
 
     // Отключаем логирование библиотеки jaudiotagger
     static {
@@ -209,5 +213,8 @@ public class Mp3FileFormatter {
 
         // Переименование файла на файл с отформатированным именем
         Files.move(mp3File, mp3File.getParent().resolve(newFilename));
+
+        // Добавляем текущий трек в список измененных треков
+        changedTracks.add(mp3File);
     }
 }

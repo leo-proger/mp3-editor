@@ -3,6 +3,10 @@ package com.github.Leo_Proger.mp3_editor.mp3handlers;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +33,15 @@ public class Mp3Manager {
      */
     private static void formatFiles() {
         try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
-            paths.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3"))
-                    .forEach(path -> {
-                        try {
-                            formatter.format(path);
-                        } catch (Mp3FileFormatException e) {
-                            LOGGER.error("Ошибка форматирования файла \"{}\"", path.getFileName());
-                        } catch (Exception e) {
-                            LOGGER.error("Ошибка при форматировании файла \"{}\"", path.getFileName());
-                        }
-                    });
+            paths.filter(Files::isRegularFile).filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3")).forEach(path -> {
+                try {
+                    formatter.format(path);
+                } catch (Mp3FileFormatException e) {
+                    LOGGER.error("Ошибка форматирования файла \"{}\"", path.getFileName());
+                } catch (Exception e) {
+                    LOGGER.error("Ошибка при форматировании файла \"{}\"", path.getFileName());
+                }
+            });
         } catch (IOException e) {
             LOGGER.error("Ошибка при чтении папки");
         }
@@ -50,9 +52,7 @@ public class Mp3Manager {
      */
     private static void moveMp3Files() {
         try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
-            paths.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3"))
-                    .forEach(Mp3Manager::moveAndCheckMp3File);
+            paths.filter(Files::isRegularFile).filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3")).forEach(Mp3Manager::moveAndCheckMp3File);
         } catch (IOException e) {
             LOGGER.error("Ошибка при чтении папки");
         }
@@ -82,10 +82,35 @@ public class Mp3Manager {
         }
     }
 
+    /**
+     * Метод выводит логи о треках, которые были задействованы в форматировании
+     */
+    private static void printResults() {
+        int countFiles = 1;
+        Tag tag;
+        try {
+            for (Path file : Mp3FileFormatter.changedTracks) {
+                AudioFile audioFile = AudioFileIO.read(file.toFile());
+                tag = audioFile.getTag();
+
+                LOGGER.info("""
+
+                        {}. "{}"
+                            Название: {}
+                            Исполнители: {}
+                        """, countFiles++, file.getFileName(), tag.getFirst(FieldKey.TITLE), tag.getFirst(FieldKey.ARTISTS));
+            }
+        } catch (Exception e) {
+            LOGGER.error("Произошла ошибка при выводе измененных треков");
+        }
+        System.out.println("lol");
+    }
+
     public static void run(boolean moveFiles) {
         formatFiles();
         if (moveFiles) {
             moveMp3Files();
         }
+        printResults();
     }
 }

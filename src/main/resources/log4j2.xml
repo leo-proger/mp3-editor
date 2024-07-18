@@ -2,7 +2,8 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="LogToConsole" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n}{TRACE=magenta}" disableAnsi="false"/>
+            <PatternLayout pattern="%highlight{%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n}{TRACE=magenta}"
+                           disableAnsi="false"/>
         </Console>
         <File name="LogToFile" fileName="logs/app.log">
             <PatternLayout>
@@ -12,7 +13,7 @@
     </Appenders>
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
-        <Logger name="com.github.Leo_Proger" level="debug" additivity="false">
+        <Logger name="com.github.Leo_Proger.mp3_editor" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole" level="debug"/>
             <AppenderRef ref="LogToFile" level="info"/>
         </Logger>
