@@ -107,9 +107,9 @@ public class Mp3Manager {
 
     public static void run(boolean moveFiles) {
         formatFiles();
+        printResults();
         if (moveFiles) {
             moveMp3Files();
         }
-        printResults();
     }
 }
