@@ -25,7 +25,7 @@ public class Mp3FileFormatterTest {
 
     @TempDir
     Path tempDir;
-    Path BASE_RESOURCES_PATH = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\com\\github\\Leo_Proger");
+    Path BASE_RESOURCES_PATH = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\com\\github\\Leo_Proger\\");
 
     private static Mp3FileFormatter formatter;
 
@@ -37,20 +37,20 @@ public class Mp3FileFormatterTest {
     @Test
     public void testRenameFile() throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         // Тест 1
-        Path originalFile1 = tempDir.resolve(BASE_RESOURCES_PATH, Path.of("lxst cxntury, Цой - Кончится Лето__--_-(remix-x.ru).mp3"));
+        Path originalFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("lxst cxntury, Цой - Кончится Лето__--_-(remix-x.ru).mp3"));
 
         formatter.format(originalFile1);
 
-        Path newFile1 = tempDir.resolve(BASE_RESOURCES_PATH, Path.of("LXST_CXNTURY, Цой_-_Кончится_Лето.mp3"));
+        Path newFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("LXST_CXNTURY, Цой_-_Кончится_Лето.mp3"));
         assertTrue(Files.exists(newFile1));
         assertFalse(Files.exists(originalFile1));
 
         // Тест 2
-        Path originalFile2 = tempDir.resolve(BASE_RESOURCES_PATH, Path.of("Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video).mp3"));
+        Path originalFile2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video).mp3"));
 
         formatter.format(originalFile2);
 
-        Path newFile2 = tempDir.resolve(BASE_RESOURCES_PATH, Path.of("Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3"));
+        Path newFile2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3"));
         assertTrue(Files.exists(newFile2));
         assertFalse(Files.exists(originalFile2));
 
