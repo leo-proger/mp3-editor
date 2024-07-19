@@ -40,10 +40,12 @@ public class Mp3Manager {
                     LOGGER.error("Ошибка форматирования файла \"{}\"", path.getFileName());
                 } catch (Exception e) {
                     LOGGER.error("Ошибка при форматировании файла \"{}\"", path.getFileName());
+                    LOGGER.debug(e.toString());
                 }
             });
         } catch (IOException e) {
             LOGGER.error("Ошибка при чтении папки");
+            LOGGER.debug(e.toString());
         }
     }
 
@@ -61,6 +63,7 @@ public class Mp3Manager {
                     });
         } catch (IOException e) {
             LOGGER.error("Ошибка при чтении папки");
+            LOGGER.debug(e.toString());
         }
     }
 
@@ -93,7 +96,7 @@ public class Mp3Manager {
      * Метод выводит логи о треках, которые были задействованы в форматировании
      */
     private static void printResults() {
-        int countFiles = 1;
+        int countFiles = 0;
         Tag tag;
         try {
             for (Path file : Mp3FileFormatter.changedTracks) {
@@ -105,10 +108,13 @@ public class Mp3Manager {
                         {}. "{}"
                             Название: {}
                             Исполнители: {}
-                        """, countFiles++, file.getFileName(), tag.getFirst(FieldKey.TITLE), tag.getFirst(FieldKey.ARTISTS));
+                        """, ++countFiles, file.getFileName(), tag.getFirst(FieldKey.TITLE), tag.getFirst(FieldKey.ARTISTS));
             }
+            LOGGER.info("Всего изменено треков: {}", Mp3FileFormatter.changedTracks.size());
+            LOGGER.info("Всего треков с ошибками (не перемещены): {}", Mp3FileFormatter.errorTracks.size());
         } catch (Exception e) {
             LOGGER.error("Произошла ошибка при выводе измененных треков");
+            LOGGER.debug(e.toString());
         }
     }
 

@@ -43,7 +43,8 @@ public class Mp3FileFormatter {
     private final static Set<String> BLACKLIST = Set.of(
             "(?i)\\(ru.soundmax.me\\)", "(?i)\\(AxeMusic.ru\\)", "(?i)\\(musmore.com\\)", "(?i)\\(remix-x.ru\\)",
             "(?i)\\(MP3Ball.ru\\)", "(?i)\\(Byfet.com\\)", "(?i)\\(EEMUSIC.ru\\)", "(?i)\\(Music Video\\)",
-            "(?i)\\(Official Music Video\\)"
+            "(?i)\\(Official Music Video\\)", "(?i)\\(Official Video\\)", "(?i)\\[Official Music Video\\]",
+            "(?i)\\[Official Video\\]", "(?i)\\[Music Video\\]"
     );
 
     /**
@@ -101,6 +102,7 @@ public class Mp3FileFormatter {
     private String newFilename;
 
     private boolean isValidMp3Filename(String filename) {
+        // TODO: Написать свою регулярку (текущее написано с помощью ChatGPT :))
         String regex = "^(?![/\\\\])(?=.*\\.mp3$)(?:([^/\\\\]+)_-_([^/\\\\]+)|([^/\\\\]+) - ([^/\\\\]+))\\.mp3$";
         return filename.matches(regex);
     }
@@ -113,11 +115,11 @@ public class Mp3FileFormatter {
             errorTracks.add(mp3File);
             throw new Mp3FileFormatException(mp3File);
         }
-        // Удаляем все подстроки из списка, лишние пробелы и все символы из перед mp3, кроме букв и закрывающей скобки
+        // Удаляем все подстроки (реклама) из списка, пробелы, тире и нижнее подчеркивание перед ".mp3"
         newFilename = BLACKLIST.stream()
                 .reduce(newFilename, (str, pattern) -> str.replaceAll(pattern, ""))
                 .trim()
-                .replaceAll("(?i)[^a-zа-яA-ZА-Я0-9)]+\\.mp3$", ".mp3");
+                .replaceAll("(?i)[ _-]+\\.mp3$", ".mp3");
 
     }
 
@@ -223,9 +225,10 @@ public class Mp3FileFormatter {
         formatMetadata();
 
         // Переименование файла на файл с отформатированным именем
-        Files.move(mp3File, mp3File.getParent().resolve(newFilename));
+        Path newMp3File = mp3File.getParent().resolve(newFilename);
+        Files.move(mp3File, newMp3File);
 
         // Добавляем текущий трек в список измененных треков
-        changedTracks.add(mp3File);
+        changedTracks.add(newMp3File);
     }
 }
