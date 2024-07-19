@@ -52,7 +52,13 @@ public class Mp3Manager {
      */
     private static void moveMp3Files() {
         try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
-            paths.filter(Files::isRegularFile).filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3")).forEach(Mp3Manager::moveAndCheckMp3File);
+            paths.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().toLowerCase(Locale.ROOT).endsWith(".mp3"))
+                    .forEach(path -> {
+                        if (!Mp3FileFormatter.errorTracks.contains(path)) {
+                            moveAndCheckMp3File(path);
+                        }
+                    });
         } catch (IOException e) {
             LOGGER.error("Ошибка при чтении папки");
         }
@@ -79,6 +85,7 @@ public class Mp3Manager {
             LOGGER.error("Файл \"{}\" поврежден.", source.getFileName());
         } catch (IOException e) {
             LOGGER.error("Ошибка при перемещении файла \"{}\"", source.getFileName());
+            LOGGER.debug(e.toString());
         }
     }
 

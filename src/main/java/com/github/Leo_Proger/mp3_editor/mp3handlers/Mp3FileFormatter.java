@@ -24,6 +24,11 @@ public class Mp3FileFormatter {
      */
     public final static List<Path> changedTracks = new LinkedList<>();
 
+    /**
+     * Треки, при форматировании которых выдает ошибку и, следовательно, их не нужно перемещать
+     */
+    public final static List<Path> errorTracks = new LinkedList<>();
+
     // Отключаем логирование библиотеки jaudiotagger
     static {
         var loggers = new Logger[]{Logger.getLogger("org.jaudiotagger")};
@@ -89,6 +94,9 @@ public class Mp3FileFormatter {
             "_feat_",
             "_and_",
     };
+
+
+    // Изначальный mp3 файл, имя которого копируется в newFilename и уже newFilename форматируется, в конце mp3File переименовывается на newFilename
     private Path mp3File;
     private String newFilename;
 
@@ -102,6 +110,7 @@ public class Mp3FileFormatter {
      */
     private void removeAd() throws Mp3FileFormatException {
         if (!isValidMp3Filename(newFilename)) {
+            errorTracks.add(mp3File);
             throw new Mp3FileFormatException(mp3File);
         }
         // Удаляем все подстроки из списка, лишние пробелы и все символы из перед mp3, кроме букв и закрывающей скобки
@@ -123,6 +132,7 @@ public class Mp3FileFormatter {
      */
     private void formatMp3Filename() throws Mp3FileFormatException {
         if (!isValidMp3Filename(newFilename)) {
+            errorTracks.add(mp3File);
             throw new Mp3FileFormatException(mp3File);
         }
         String formattedFilename = newFilename.replaceAll(" ", "_").replaceAll(",_", ", ");
@@ -163,6 +173,7 @@ public class Mp3FileFormatter {
      */
     private void formatMetadata() throws IOException, Mp3FileFormatException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException {
         if (!isValidMp3Filename(newFilename)) {
+            errorTracks.add(mp3File);
             throw new Mp3FileFormatException(mp3File);
         }
         // Преобразуем строку в объект файла, чтобы можно было работать с метаданными
