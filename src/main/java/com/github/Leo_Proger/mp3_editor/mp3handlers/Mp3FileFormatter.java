@@ -10,6 +10,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,10 +42,10 @@ public class Mp3FileFormatter {
      * Реклама, которую нужно удалить из имени mp3 файла
      */
     private final static Set<String> BLACKLIST = Set.of(
-            "(?i)\\(ru.soundmax.me\\)", "(?i)\\(AxeMusic.ru\\)", "(?i)\\(musmore.com\\)", "(?i)\\(remix-x.ru\\)",
-            "(?i)\\(MP3Ball.ru\\)", "(?i)\\(Byfet.com\\)", "(?i)\\(EEMUSIC.ru\\)", "(?i)\\(Music Video\\)",
-            "(?i)\\(Official Music Video\\)", "(?i)\\(Official Video\\)", "(?i)\\[Official Music Video\\]",
-            "(?i)\\[Official Video\\]", "(?i)\\[Music Video\\]"
+            "\\(ru.soundmax.me\\)", "\\(AxeMusic.ru\\)", "\\(musmore.com\\)", "\\(remix-x.ru\\)",
+            "\\(MP3Ball.ru\\)", "\\(Byfet.com\\)", "\\(EEMUSIC.ru\\)", "\\(Music Video\\)",
+            "\\(Official Music Video\\)", "\\(Official Video\\)", "\\[Official Music Video\\]",
+            "\\[Official Video\\]", "\\[Music Video\\]"
     );
 
     /**
@@ -96,48 +97,54 @@ public class Mp3FileFormatter {
             "_and_",
     };
 
-
     // Изначальный mp3 файл, имя которого копируется в newFilename и уже newFilename форматируется, в конце mp3File переименовывается на newFilename
     private Path mp3File;
     private String newFilename;
 
-    private boolean isValidMp3Filename(String filename) {
-        // TODO: Написать свою регулярку (текущее написано с помощью ChatGPT :))
-        String regex = "^(?![/\\\\])(?=.*\\.mp3$)(?:([^/\\\\]+)_-_([^/\\\\]+)|([^/\\\\]+) - ([^/\\\\]+))\\.mp3$";
+    /**
+     * Проверяет регулярным выражением корректность формата имени mp3 файла перед дальнейшим форматированием.
+     * Этот метод используется для валидации имени файла, чтобы предотвратить
+     * возможные ошибки в последующих операциях форматирования.
+     *
+     * @param filename имя файла для проверки
+     * @return {@code true}, если имя файла соответствует ожидаемому формату и может быть
+     * обработано дальше, {@code false} в противном случае
+     * @throws IllegalArgumentException если переданное имя файла является пустой строкой
+     * @see Mp3FileFormatter#formatMp3Filename() Метод, который выполняет основной форматирование имени mp3 файла
+     */
+    private boolean isValidMp3Filename(@NotNull String filename) {
+        if (filename.isEmpty()) {
+            throw new IllegalArgumentException("Имя mp3 файла не может быть пустым");
+        }
+        String regex = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$']+(_[а-яА-Яa-zA-Z0-9()\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.!$' ]+)\\.mp3$";
         return filename.matches(regex);
     }
 
     /**
-     * Метод удаляет рекламу, находящуюся в BLACKLIST, игнорируя регистр, и удаляет в конце, перед ".mp3", все, кроме цифр, букв и закрывающей скобки (остатки от рекламы)
+     * Метод осуществляет предварительное форматирование:
+     * <p>
+     * 1. Удаляет рекламу, находящуюся в BLACKLIST
+     * <p>
+     * 2. Заменяет разделители, находящиеся в ARTIST_SEPARATORS, на ", "
+     * <p>
+     * Это нужно для того чтобы метод isValidMp3Filename() смог корректно проверить, можно ли название mp3 файла отформатировать без ошибок
      */
-    private void removeAd() throws Mp3FileFormatException {
-        if (!isValidMp3Filename(newFilename)) {
-            errorTracks.add(mp3File);
+    private void preformatting() throws Mp3FileFormatException {
+        // Проверка строки, что: это имя mp3 файла, у имени mp3 файла есть исполнитель и название, имя mp3 файла не имеет запрещенных символов
+        if (!newFilename.matches("^([^\\\\/:*?\\\"<>|]+)(_-_| - )([^\\\\/:*?\\\"<>|]+)\\.mp3$")) {
             throw new Mp3FileFormatException(mp3File);
         }
-        // Удаляем все подстроки (реклама) из списка, пробелы, тире и нижнее подчеркивание перед ".mp3"
+
+        // Удаляем все подстроки (реклама) из списка, игнорируя регистр, а также пробелы, тире и нижнее подчеркивание перед ".mp3", которые остались после удаления рекламы
         newFilename = BLACKLIST.stream()
-                .reduce(newFilename, (str, pattern) -> str.replaceAll(pattern, ""))
+                .reduce(newFilename, (str, ad) -> str.replaceAll("(?i)" + ad, ""))
                 .trim()
                 .replaceAll("(?i)[ _-]+\\.mp3$", ".mp3");
 
-    }
-
-    /**
-     * Метод форматирует имя mp3 файла согласно такому формату:
-     * <p>
-     * 1. Заменяются все пробелы на нижнее подчеркивание
-     * <p>
-     * 2. Заменяются все прочие разделители исполнителей, указанные в ARTIST_SEPARATORS, на запятую с пробелом
-     * <p>
-     * 3. Заменяется имя исполнителя на корректное, если требуется
-     */
-    private void formatMp3Filename() throws Mp3FileFormatException {
-        if (!isValidMp3Filename(newFilename)) {
-            errorTracks.add(mp3File);
-            throw new Mp3FileFormatException(mp3File);
-        }
-        String formattedFilename = newFilename.replaceAll(" ", "_").replaceAll(",_", ", ");
+        // Убираем пробелы и "поправляем" запятую
+        String formattedFilename = newFilename
+                .replaceAll(" ", "_")
+                .replaceAll("[\\s_]*,[\\s_]*", ", ");
 
         // Разделяем на часть с исполнителями и часть с названием трека
         String[] parts = formattedFilename.split("_-_");
@@ -146,9 +153,27 @@ public class Mp3FileFormatter {
 
         // Заменяем все прочие разделители исполнителей на запятую с пробелом
         for (String artistSeparator : ARTIST_SEPARATORS) {
-            if (left.contains(artistSeparator))
+            if (left.contains(artistSeparator)) {
                 left = left.replaceAll(artistSeparator, ", ");
+            }
         }
+        newFilename = left + "_-_" + right;
+    }
+
+    /**
+     * Метод в имени mp3 файла заменяет имена исполнителей, находящиеся в CORRECT_ARTIST_NAMES, на корректное
+     */
+    private void formatMp3Filename() throws Mp3FileFormatException {
+        preformatting();
+        if (!isValidMp3Filename(newFilename)) {
+            errorTracks.add(mp3File);
+            throw new Mp3FileFormatException(mp3File);
+        }
+
+        // Разделяем на часть с исполнителями и часть с названием трека
+        String[] parts = newFilename.split("_-_");
+        String left = parts[0];
+        String right = parts[1];
 
         // Заменяем имена исполнителей на корректные
         List<String> leftWithCorrectedArtistNames = new ArrayList<>();
@@ -220,7 +245,6 @@ public class Mp3FileFormatter {
         this.mp3File = mp3File;
         newFilename = mp3File.getFileName().toString();
 
-        removeAd();
         formatMp3Filename();
         formatMetadata();
 

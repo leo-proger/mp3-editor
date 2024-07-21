@@ -36,8 +36,8 @@ public class Mp3FileFormatterTest {
 
     @Test
     public void testRenameFile() throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
-        // Тест 1
-        Path originalFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("lxst cxntury, Цой - Кончится Лето__--_-(remix-x.ru).mp3"));
+        // Случай 1
+        Path originalFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("lxst cxntury  ,Цой - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3"));
 
         formatter.format(originalFile1);
 
@@ -45,8 +45,8 @@ public class Mp3FileFormatterTest {
         assertTrue(Files.exists(newFile1));
         assertFalse(Files.exists(originalFile1));
 
-        // Тест 2
-        Path originalFile2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video).mp3"));
+        // Случай 2
+        Path originalFile2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video)--___(EEMUSIC.ru).mp3"));
 
         formatter.format(originalFile2);
 
@@ -58,21 +58,11 @@ public class Mp3FileFormatterTest {
         Files.move(newFile1, originalFile1);
         Files.move(newFile2, originalFile2);
 
-        // Тест 3
-        Path filename = Path.of("HXVRMXN.mp3");
-        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename));
-
-        // Тест 4
-        Path filename2 = Path.of("HXVRMXN- .mp3");
-        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename2));
-
-        // Тест 5
-        Path filename3 = Path.of("HXVRMXN -j.mp3");
-        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename3));
-
-        // Тест 6
-        Path filename4 = Path.of("HXVRMXN-.mp3");
-        assertThrows(Mp3FileFormatException.class, () -> formatter.format(filename4));
+        // Случай 3
+        String[] strings = {"HXVRMXN.mp3", "HXVRMXN- .mp3", "HXVRMXN -j.mp3", "HXVRMXN-.mp3"};
+        for (String string : strings) {
+            assertThrows(Mp3FileFormatException.class, () -> formatter.format(Path.of(string)));
+        }
     }
 
     @Test
@@ -91,4 +81,6 @@ public class Mp3FileFormatterTest {
         // Переименовываем обратно для последующих тестов
         Files.move(newMp3File, mp3File);
     }
+
+    // TODO: Добавить тесты для проверки регулярного выражения
 }
