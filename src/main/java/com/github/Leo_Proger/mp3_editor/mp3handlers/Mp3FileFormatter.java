@@ -112,11 +112,11 @@ public class Mp3FileFormatter {
      * @throws IllegalArgumentException если переданное имя файла является пустой строкой
      * @see Mp3FileFormatter#formatMp3Filename() Метод, который выполняет основной форматирование имени mp3 файла
      */
-    private boolean isValidMp3Filename(@NotNull String filename) {
+    public static boolean isValidMp3Filename(@NotNull String filename) {
         if (filename.isEmpty()) {
             throw new IllegalArgumentException("Имя mp3 файла не может быть пустым");
         }
-        String regex = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$']+(_[а-яА-Яa-zA-Z0-9()\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.!$' ]+)\\.mp3$";
+        String regex = "^(([а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+(_[а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9()Ø\\-_.!$' ]+)\\.mp3$";
         return filename.matches(regex);
     }
 

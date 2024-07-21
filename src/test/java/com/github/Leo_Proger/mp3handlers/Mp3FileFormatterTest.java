@@ -82,5 +82,33 @@ public class Mp3FileFormatterTest {
         Files.move(newMp3File, mp3File);
     }
 
-    // TODO: Добавить тесты для проверки регулярного выражения
+    @Test
+    public void testRegularExpressionValidation() {
+        String[] correctStrings = {
+                "Валентин_Стрыкало, DJ_SESAME_-_Наше_лето_(Phonk_remix).mp3",
+                "Zayn123_-_Dusk234_Till_Dawn2342.mp3",
+                "Ya$h, SXNSTXRM, Kingpin_Skinny_Pimp_-_SAMURAI_PHONK.mp3",
+                "X-WAYNE, SVFXNXV, CURSEDEVIL, WESTLIBERTY'S, 74blade, LEYNCLOUD, BXGR, ARGXNTUM, SH3TLVIZ, KALXSH, ROXSH_LUXIRY, cxsredead, DJ_CHANSEY, THRILLMANE, LXSTPLVYER, NESMIYANOV_-_WORLDWIDE.mp3",
+                "VERV!X_-_Goodbye_Vol._3.mp3",
+                "TRVNSPORTER, G.P.R_Beat_-_Champion.mp3",
+                "Kungs, Cookin'_On_3_Burners_-_This_Girl.mp3",
+                "VØJ, ATSMXN_-_Criminal_Breath.mp3",
+                "KIM, Øneheart_-_NIGHTEXPRESS.mp3",
+                "_zodivk, Bearded_Legend__-_The_Wayfarer_.mp3",
+        };
+        for (String string : correctStrings) {
+            assertTrue(Mp3FileFormatter.isValidMp3Filename(string));
+        }
+
+        String[] incorrectStrings = {
+                "X:\\Music\\Би-2_-_Полковнику_никто_не_пишет.mp3",
+                "zodivk, Bearded_Legend_-_The_Wayfarer",
+                "zodivk,Bearded_Legend_-_The_Wayfarer",
+                " zodivk, Bearded_Legend_-_The_Wayfarer.mp3",
+                "zodivk, Bearded_Legend _-_The_Wayfarer.mp3",
+        };
+        for (String string : incorrectStrings) {
+            assertFalse(Mp3FileFormatter.isValidMp3Filename(string));
+        }
+    }
 }
