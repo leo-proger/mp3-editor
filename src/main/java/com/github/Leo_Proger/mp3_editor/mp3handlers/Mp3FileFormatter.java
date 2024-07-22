@@ -203,7 +203,7 @@ public class Mp3FileFormatter {
             errorTracks.add(mp3File);
             throw new Mp3FileFormatException(mp3File);
         }
-        // Преобразуем строку в объект файла, чтобы можно было работать с метаданными
+        // Одновременно преобразуем строку в объект файла, чтобы можно было работать с метаданными, и проверяем файл на ошибки
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
         Tag tag = audioFile.getTag();
         String[] parts = newFilename.replace(".mp3", "").split("_-_");

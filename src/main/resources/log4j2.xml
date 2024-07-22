@@ -11,7 +11,7 @@
         </Console>
         <File name="LogToFile" fileName="${LOG_FOLDER}/app.log">
             <PatternLayout>
-                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %c{1.} [%t] %p %m%n</Pattern>
             </PatternLayout>
         </File>
     </Appenders>
