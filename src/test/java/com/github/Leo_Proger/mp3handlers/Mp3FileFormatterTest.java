@@ -1,7 +1,8 @@
 package com.github.Leo_Proger.mp3handlers;
 
-import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileFormatException;
 import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileFormatter;
+import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileFormattingException;
+import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileManager;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -35,51 +36,48 @@ public class Mp3FileFormatterTest {
     }
 
     @Test
-    public void testRenameFile() throws Mp3FileFormatException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
+    public void testRenameFile() throws Mp3FileFormattingException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         // Случай 1
-        Path originalFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("lxst cxntury  ,Цой - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3"));
+        Path originalFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("lxst cxntury  ,Цой x aboba feat aboab ft. name x sosy_jopy - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3"));
 
-        formatter.format(originalFile1);
+        Path newFilename1 = formatter.format(originalFile1);
 
-        Path newFile1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("LXST_CXNTURY, Цой_-_Кончится_Лето.mp3"));
-        assertTrue(Files.exists(newFile1));
-        assertFalse(Files.exists(originalFile1));
+        Path expectedString1 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("LXST_CXNTURY, Цой, aboba, aboab, name, sosy_jopy_-_Кончится_Лето.mp3"));
+        assertEquals(newFilename1, expectedString1);
 
         // Случай 2
         Path originalFile2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video)--___(EEMUSIC.ru).mp3"));
 
-        formatter.format(originalFile2);
+        Path newFilename2 = formatter.format(originalFile2);
 
-        Path newFile2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3"));
-        assertTrue(Files.exists(newFile2));
-        assertFalse(Files.exists(originalFile2));
-
-        // Переименовываем обратно для последующих тестов
-        Files.move(newFile1, originalFile1);
-        Files.move(newFile2, originalFile2);
+        Path expectedString2 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3"));
+        assertEquals(newFilename2, expectedString2);
 
         // Случай 3
         String[] strings = {"HXVRMXN.mp3", "HXVRMXN- .mp3", "HXVRMXN -j.mp3", "HXVRMXN-.mp3"};
         for (String string : strings) {
-            assertThrows(Mp3FileFormatException.class, () -> formatter.format(Path.of(string)));
+            assertThrows(Mp3FileFormattingException.class, () -> formatter.format(Path.of(string)));
         }
     }
 
     @Test
-    public void testEditMetadata() throws InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormatException, InvalidAudioFrameException, ReadOnlyFileException {
-        Path mp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R - Давай за жизнь (Phonk Remix).mp3");
-        Path newMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R_-_Давай_за_жизнь_(Phonk_Remix).mp3");
+    public void testEditMetadata() throws InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
+        // Форматируем и переименовываем файл
+        Path originalMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R - Давай за жизнь (Phonk Remix).mp3");
 
-        Mp3File editedMp3File = new Mp3File(mp3File);
-        ID3v2 tag = editedMp3File.getId3v2Tag();
+        Path newMp3Filename = formatter.format(originalMp3File);
+        Mp3FileManager.renameFile(originalMp3File, newMp3Filename);
 
-        formatter.format(mp3File);
+        // Проверяем форматирование метаданных
+        Mp3File mp3FileObj = new Mp3File(newMp3Filename);
+        ID3v2 tag = mp3FileObj.getId3v2Tag();
 
         assertEquals(tag.getArtist(), "ЛЮБЭ; 37R");
         assertEquals(tag.getTitle(), "Давай за жизнь (Phonk Remix)");
 
         // Переименовываем обратно для последующих тестов
-        Files.move(newMp3File, mp3File);
+        Path expectedMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R_-_Давай_за_жизнь_(Phonk_Remix).mp3");
+        Files.move(expectedMp3File, originalMp3File);
     }
 
     @Test

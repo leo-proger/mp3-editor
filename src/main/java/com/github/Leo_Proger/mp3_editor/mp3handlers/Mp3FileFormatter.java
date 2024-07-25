@@ -1,5 +1,6 @@
 package com.github.Leo_Proger.mp3_editor.mp3handlers;
 
+import com.github.Leo_Proger.mp3_editor.main.ErrorMessage;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -13,23 +14,12 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Mp3FileFormatter {
-    /**
-     * Список измененных треков, чтобы в конце программы вывести сводку
-     */
-    public final static List<Path> changedTracks = new LinkedList<>();
-
-    /**
-     * Треки, при форматировании которых выдает ошибку и, следовательно, их не нужно перемещать
-     */
-    public final static List<Path> errorTracks = new LinkedList<>();
-
     // Отключаем логирование библиотеки jaudiotagger
     static {
         var loggers = new Logger[]{Logger.getLogger("org.jaudiotagger")};
@@ -45,7 +35,7 @@ public class Mp3FileFormatter {
             "\\(ru.soundmax.me\\)", "\\(AxeMusic.ru\\)", "\\(musmore.com\\)", "\\(remix-x.ru\\)",
             "\\(MP3Ball.ru\\)", "\\(Byfet.com\\)", "\\(EEMUSIC.ru\\)", "\\(Music Video\\)",
             "\\(Official Music Video\\)", "\\(Official Video\\)", "\\[Official Music Video\\]",
-            "\\[Official Video\\]", "\\[Music Video\\]"
+            "\\[Official Video\\]", "\\[Music Video\\]", "\\(Official Audio\\)", "\\[Official Audio\\]"
     );
 
     /**
@@ -60,12 +50,14 @@ public class Mp3FileFormatter {
         put("ya_h", "Ya$h");
         put("am_n", "Amøn");
         put("amon", "Amøn");
+        put("amøn", "Amøn");
         put("voj", "VØJ");
         put("v_j", "VØJ");
         put("vj", "VØJ");
         put("scxr_soul", "SCXR_SOUL");
         put("swerve", "$werve");
         put("werve", "$werve");
+        put("$werve", "$werve");
         put("oldflop", "OLDFLOP");
         put("igres", "iGRES");
         put("finivoid", "FINIVOID");
@@ -74,6 +66,20 @@ public class Mp3FileFormatter {
         put("westliberty's", "WESTLIBERTY'S");
         put("westlibertys", "WESTLIBERTY'S");
         put("westliberty s", "WESTLIBERTY'S");
+        put("altare", "Altare");
+        put("neheart", "Øneheart");
+        put("_neheart", "Øneheart");
+        put("oneheart", "Øneheart");
+        put("archez", "ARCHEZ");
+        put("509 icario", "509 $ICARIO");
+        put("509 sicario", "509 $ICARIO");
+        put("boneles_s", "boneles_s");
+        put("1odum_defect", "1ODUM_DEFECT");
+        put("7vvch", "7vvch");
+        put("ikiru", "IKIRU");
+        put("622wasamistake", "622WASAMISTAKE");
+        put("lxrdofdoom", "LxrdOfDoom");
+        put("dvrkhold", "DVRKHOLD");
     }};
 
     /**
@@ -91,10 +97,11 @@ public class Mp3FileFormatter {
             "_x_",
             "_X_",
             "_&_",
-            "_feat._",
-            "_ft._",
-            "_feat_",
             "_and_",
+            "_feat._",
+            "_feat_",
+            "_ft._",
+            "_ft_",
     };
 
     // Изначальный mp3 файл, имя которого копируется в newFilename и уже newFilename форматируется, в конце mp3File переименовывается на newFilename
@@ -110,13 +117,13 @@ public class Mp3FileFormatter {
      * @return {@code true}, если имя файла соответствует ожидаемому формату и может быть
      * обработано дальше, {@code false} в противном случае
      * @throws IllegalArgumentException если переданное имя файла является пустой строкой
-     * @see Mp3FileFormatter#formatMp3Filename() Метод, который выполняет основной форматирование имени mp3 файла
+     * @see Mp3FileFormatter#formatFilename() Метод, который выполняет основной форматирование имени mp3 файла
      */
     public static boolean isValidMp3Filename(@NotNull String filename) {
         if (filename.isEmpty()) {
             throw new IllegalArgumentException("Имя mp3 файла не может быть пустым");
         }
-        String regex = "^(([а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+(_[а-яА-Яa-zA-Z0-9()Ø\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9()Ø\\-_.!$' ]+)\\.mp3$";
+        String regex = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.,!$'øØ ]+)\\.mp3$";
         return filename.matches(regex);
     }
 
@@ -129,10 +136,10 @@ public class Mp3FileFormatter {
      * <p>
      * Это нужно для того чтобы метод isValidMp3Filename() смог корректно проверить, можно ли название mp3 файла отформатировать без ошибок
      */
-    private void preformatting() throws Mp3FileFormatException {
+    private void preformatting() throws Mp3FileFormattingException {
         // Проверка строки, что: это имя mp3 файла, у имени mp3 файла есть исполнитель и название, имя mp3 файла не имеет запрещенных символов
         if (!newFilename.matches("^([^\\\\/:*?\\\"<>|]+)(_-_| - )([^\\\\/:*?\\\"<>|]+)\\.mp3$")) {
-            throw new Mp3FileFormatException(mp3File);
+            throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
 
         // Удаляем все подстроки (реклама) из списка, игнорируя регистр, а также пробелы, тире и нижнее подчеркивание перед ".mp3", которые остались после удаления рекламы
@@ -163,11 +170,10 @@ public class Mp3FileFormatter {
     /**
      * Метод в имени mp3 файла заменяет имена исполнителей, находящиеся в CORRECT_ARTIST_NAMES, на корректное
      */
-    private void formatMp3Filename() throws Mp3FileFormatException {
+    private void formatFilename() throws Mp3FileFormattingException {
         preformatting();
         if (!isValidMp3Filename(newFilename)) {
-            errorTracks.add(mp3File);
-            throw new Mp3FileFormatException(mp3File);
+            throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
 
         // Разделяем на часть с исполнителями и часть с названием трека
@@ -178,9 +184,9 @@ public class Mp3FileFormatter {
         // Заменяем имена исполнителей на корректные
         List<String> leftWithCorrectedArtistNames = new ArrayList<>();
         for (String artist : left.split(", ")) {
-            if (CORRECT_ARTIST_NAMES.containsKey(artist.toLowerCase(Locale.ROOT))) {
+            if (CORRECT_ARTIST_NAMES.containsKey(artist.toLowerCase())) {
                 leftWithCorrectedArtistNames.add(
-                        CORRECT_ARTIST_NAMES.getOrDefault(artist.toLowerCase(Locale.ROOT), artist.trim())
+                        CORRECT_ARTIST_NAMES.getOrDefault(artist.toLowerCase(), artist.trim())
                 );
             } else {
                 leftWithCorrectedArtistNames.add(artist);
@@ -198,10 +204,9 @@ public class Mp3FileFormatter {
      * <p>
      * 2. Заменяется запятая на общепринятый разделитель исполнителей в метаданных - точка с запятой
      */
-    private void formatMetadata() throws IOException, Mp3FileFormatException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException {
+    private void formatMetadata() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
-            errorTracks.add(mp3File);
-            throw new Mp3FileFormatException(mp3File);
+            throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
         // Одновременно преобразуем строку в объект файла, чтобы можно было работать с метаданными, и проверяем файл на ошибки
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
@@ -238,21 +243,16 @@ public class Mp3FileFormatter {
     /**
      * Метод запускает удаление рекламы, форматирование имени mp3 файла, форматирование метаданных mp3 файла и сохраняет изменения
      *
-     * @param mp3File файл mp3, который нужно отформатировать
-     * @throws Mp3FileFormatException ошибка форматирования mp3 файла
+     * @param mp3File файл расширения mp3, который нужно отформатировать
+     * @return новый файл с отформатированными именем и метаданными
      */
-    public void format(Path mp3File) throws Mp3FileFormatException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
+    public Path format(Path mp3File) throws Mp3FileFormattingException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
         this.mp3File = mp3File;
         newFilename = mp3File.getFileName().toString();
 
-        formatMp3Filename();
+        formatFilename();
         formatMetadata();
 
-        // Переименование файла на файл с отформатированным именем
-        Path newMp3File = mp3File.getParent().resolve(newFilename);
-        Files.move(mp3File, newMp3File);
-
-        // Добавляем текущий трек в список измененных треков
-        changedTracks.add(newMp3File);
+        return mp3File.getParent().resolve(newFilename);
     }
 }
