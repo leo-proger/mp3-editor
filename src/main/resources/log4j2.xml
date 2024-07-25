@@ -6,12 +6,12 @@
 
     <Appenders>
         <Console name="LogToConsole" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%d{HH:mm:ss} %level: %msg%n}{TRACE=magenta}"
+            <PatternLayout pattern="%highlight{%msg%n}{TRACE=magenta}"
                            disableAnsi="false"/>
         </Console>
         <File name="LogToFile" fileName="${LOG_FOLDER}/app.log">
             <PatternLayout>
-                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %c{1.} [%t] %p %m%n</Pattern>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %c{1.} %p %m%n</Pattern>
             </PatternLayout>
         </File>
     </Appenders>
