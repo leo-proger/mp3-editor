@@ -68,7 +68,7 @@ public class FileManager {
                             moveFile(newPath, toDir);
                         }
                         // Перепроверяем, что файл не находится в errorTracks, и добавляем в changedTracks
-                        if (!errorTracks.containsKey(path)) {
+                        if (!errorTracks.containsKey(newPath)) {
                             changedTracks.add(newPath);
                         }
                     });
