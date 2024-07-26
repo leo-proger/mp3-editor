@@ -1,4 +1,4 @@
-package com.github.Leo_Proger.mp3_editor.mp3handlers;
+package com.github.Leo_Proger.mp3_editor.mp3_file_handlers;
 
 import java.nio.file.Path;
 

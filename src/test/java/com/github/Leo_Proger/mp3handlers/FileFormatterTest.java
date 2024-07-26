@@ -1,8 +1,8 @@
 package com.github.Leo_Proger.mp3handlers;
 
-import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileFormatter;
-import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileFormattingException;
-import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileManager;
+import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.FileFormatter;
+import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.Mp3FileFormattingException;
+import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.FileManager;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -16,24 +16,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Mp3FileFormatterTest {
+public class FileFormatterTest {
 
     @TempDir
     Path tempDir;
     Path BASE_RESOURCES_PATH = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\com\\github\\Leo_Proger\\");
 
-    private static Mp3FileFormatter formatter;
+    private static FileFormatter formatter;
 
     @BeforeEach
     public void setup() {
-        formatter = new Mp3FileFormatter();
+        formatter = new FileFormatter();
     }
 
     @Test
@@ -67,7 +66,7 @@ public class Mp3FileFormatterTest {
         Path originalMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R - Давай за жизнь (Phonk Remix).mp3");
 
         Path newMp3Filename = formatter.format(originalMp3File);
-        Mp3FileManager.renameFile(originalMp3File, newMp3Filename);
+        FileManager.renameFile(originalMp3File, newMp3Filename);
 
         // Проверяем форматирование метаданных
         Mp3File mp3FileObj = new Mp3File(newMp3Filename);
@@ -96,7 +95,7 @@ public class Mp3FileFormatterTest {
                 "_zodivk, Bearded_Legend__-_The_Wayfarer_.mp3",
         };
         for (String string : correctStrings) {
-            assertTrue(Mp3FileFormatter.isValidMp3Filename(string));
+            assertTrue(FileFormatter.isValidMp3Filename(string));
         }
 
         String[] incorrectStrings = {
@@ -107,7 +106,7 @@ public class Mp3FileFormatterTest {
                 "zodivk, Bearded_Legend _-_The_Wayfarer.mp3",
         };
         for (String string : incorrectStrings) {
-            assertFalse(Mp3FileFormatter.isValidMp3Filename(string));
+            assertFalse(FileFormatter.isValidMp3Filename(string));
         }
     }
 
@@ -120,12 +119,12 @@ public class Mp3FileFormatterTest {
         // Проверяем, что файл существует в folder_from
         assertTrue(Files.exists(fromDir.resolve(file)));
 
-        Mp3FileManager.moveFile(fromDir.resolve(file), toDir);
+        FileManager.moveFile(fromDir.resolve(file), toDir);
 
         assertFalse(Files.exists(fromDir.resolve(file)));
         assertTrue(Files.exists(toDir.resolve(file)));
 
         // Перемещаем обратно для последующих тестов
-        Mp3FileManager.moveFile(toDir.resolve(file), fromDir);
+        FileManager.moveFile(toDir.resolve(file), fromDir);
     }
 }

@@ -1,6 +1,6 @@
 package com.github.Leo_Proger.mp3_editor.main;
 
-import com.github.Leo_Proger.mp3_editor.mp3handlers.Mp3FileManager;
+import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.FileManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,8 +8,8 @@ import static com.github.Leo_Proger.mp3_editor.main.Config.TARGET_PATH;
 
 public class Main {
     public static void main(String[] args) {
-        Mp3FileManager.run(true);
-        ImageDeleter.deleteAllImages(TARGET_PATH);
+        FileManager.run(true);
+        ImageCleaner.deleteAllImages(TARGET_PATH);
         exitProgram();
     }
 

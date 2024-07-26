@@ -1,4 +1,4 @@
-package com.github.Leo_Proger.mp3_editor.mp3handlers;
+package com.github.Leo_Proger.mp3_editor.mp3_file_handlers;
 
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.slf4j.Logger;
@@ -19,9 +19,9 @@ import static com.github.Leo_Proger.mp3_editor.main.Config.SOURCE_PATH;
 import static com.github.Leo_Proger.mp3_editor.main.Config.TARGET_PATH;
 import static com.github.Leo_Proger.mp3_editor.main.ErrorMessage.*;
 
-public class Mp3FileManager {
+public class FileManager {
     static {
-        LOGGER = LoggerFactory.getLogger(Mp3FileFormatter.class);
+        LOGGER = LoggerFactory.getLogger(FileFormatter.class);
     }
     private static final Logger LOGGER;
 
@@ -46,7 +46,7 @@ public class Mp3FileManager {
                             .endsWith(".mp3"))
                     .forEach(path -> {
                         // Форматируем файла
-                        Mp3FileFormatter formatter = new Mp3FileFormatter();
+                        FileFormatter formatter = new FileFormatter();
                         Path newPath = path;
                         try {
                             // Получаем путь к файлу с отформатированным именем

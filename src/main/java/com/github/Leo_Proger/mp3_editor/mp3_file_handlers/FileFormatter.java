@@ -1,4 +1,4 @@
-package com.github.Leo_Proger.mp3_editor.mp3handlers;
+package com.github.Leo_Proger.mp3_editor.mp3_file_handlers;
 
 import com.github.Leo_Proger.mp3_editor.main.ErrorMessage;
 import org.jaudiotagger.audio.AudioFile;
@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Mp3FileFormatter {
+public class FileFormatter {
     // Отключаем логирование библиотеки jaudiotagger
     static {
         var loggers = new Logger[]{Logger.getLogger("org.jaudiotagger")};
@@ -117,7 +117,7 @@ public class Mp3FileFormatter {
      * @return {@code true}, если имя файла соответствует ожидаемому формату и может быть
      * обработано дальше, {@code false} в противном случае
      * @throws IllegalArgumentException если переданное имя файла является пустой строкой
-     * @see Mp3FileFormatter#formatFilename() Метод, который выполняет основной форматирование имени mp3 файла
+     * @see FileFormatter#formatFilename() Метод, который выполняет основной форматирование имени mp3 файла
      */
     public static boolean isValidMp3Filename(@NotNull String filename) {
         if (filename.isEmpty()) {

@@ -8,11 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-public class ImageDeleter {
+public class ImageCleaner {
     private static final Logger LOGGER;
 
     static {
-        LOGGER = LoggerFactory.getLogger(ImageDeleter.class);
+        LOGGER = LoggerFactory.getLogger(ImageCleaner.class);
     }
 
     /**
