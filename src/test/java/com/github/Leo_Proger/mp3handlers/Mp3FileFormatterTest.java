@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -99,7 +100,7 @@ public class Mp3FileFormatterTest {
         }
 
         String[] incorrectStrings = {
-                "X:\\Music\\Би-2_-_Полковнику_никто_не_пишет.mp3",
+                "X:\\Folder\\Би-2_-_Полковнику_никто_не_пишет.mp3",
                 "zodivk, Bearded_Legend_-_The_Wayfarer",
                 "zodivk,Bearded_Legend_-_The_Wayfarer",
                 " zodivk, Bearded_Legend_-_The_Wayfarer.mp3",
@@ -108,5 +109,23 @@ public class Mp3FileFormatterTest {
         for (String string : incorrectStrings) {
             assertFalse(Mp3FileFormatter.isValidMp3Filename(string));
         }
+    }
+
+    @Test
+    public void testMoveFile() {
+        Path fromDir = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\com\\github\\Leo_Proger\\folder_from");
+        Path toDir = Path.of("X:\\Programming\\java_projects\\mp3_editor\\src\\test\\resources\\com\\github\\Leo_Proger\\folder_to");
+        String file = "5admin_-_Silence.mp3";
+
+        // Проверяем, что файл существует в folder_from
+        assertTrue(Files.exists(fromDir.resolve(file)));
+
+        Mp3FileManager.moveFile(fromDir.resolve(file), toDir);
+
+        assertFalse(Files.exists(fromDir.resolve(file)));
+        assertTrue(Files.exists(toDir.resolve(file)));
+
+        // Перемещаем обратно для последующих тестов
+        Mp3FileManager.moveFile(toDir.resolve(file), fromDir);
     }
 }

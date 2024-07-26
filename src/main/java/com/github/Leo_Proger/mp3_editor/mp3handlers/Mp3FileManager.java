@@ -90,8 +90,8 @@ public class Mp3FileManager {
         }
     }
 
-    public static void renameFile(Path from, Path to) throws IOException {
-        Files.move(from, to, StandardCopyOption.ATOMIC_MOVE);
+    public static void renameFile(Path fromName, Path toName) throws IOException {
+        Files.move(fromName, toName, StandardCopyOption.ATOMIC_MOVE);
     }
 
     /**
