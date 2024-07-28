@@ -24,7 +24,7 @@ public class ImageCleaner {
         try (Stream<Path> files = Files.list(targetPath)) {
             files.filter(file -> {
                 String fileName = file.getFileName().toString().toLowerCase();
-                return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".bmp") || fileName.endsWith(".gif") || fileName.endsWith(".url");
+                return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".bmp") || fileName.endsWith(".gif") || fileName.endsWith(".url") || fileName.endsWith(".webp");
             }).forEach(file -> {
                 try {
                     Files.delete(file);
