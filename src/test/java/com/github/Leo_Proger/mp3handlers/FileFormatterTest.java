@@ -54,6 +54,14 @@ public class FileFormatterTest {
         assertEquals(newFilename2, expectedString2);
 
         // Случай 3
+        Path originalFile3 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Jason Paris, Amøn - Heading North.mp3"));
+
+        Path newFilename3 = formatter.format(originalFile3);
+
+        Path expectedString3 = tempDir.resolve(BASE_RESOURCES_PATH.resolve("Jason_Paris, Amon_-_Heading_North.mp3"));
+        assertEquals(newFilename3, expectedString3);
+
+        // Случай 4
         String[] strings = {"HXVRMXN.mp3", "HXVRMXN- .mp3", "HXVRMXN -j.mp3", "HXVRMXN-.mp3"};
         for (String string : strings) {
             assertThrows(Mp3FileFormattingException.class, () -> formatter.format(Path.of(string)));
@@ -63,7 +71,7 @@ public class FileFormatterTest {
     @Test
     public void testEditMetadata() throws InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
         // Форматируем и переименовываем файл
-        Path originalMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R - Давай за жизнь (Phonk Remix).mp3");
+        Path originalMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "Øneheart, Reidenshi - snowfall.mp3");
 
         Path newMp3Filename = formatter.format(originalMp3File);
         FileManager.renameFile(originalMp3File, newMp3Filename);
@@ -72,11 +80,11 @@ public class FileFormatterTest {
         Mp3File mp3FileObj = new Mp3File(newMp3Filename);
         ID3v2 tag = mp3FileObj.getId3v2Tag();
 
-        assertEquals(tag.getArtist(), "ЛЮБЭ; 37R");
-        assertEquals(tag.getTitle(), "Давай за жизнь (Phonk Remix)");
+        assertEquals(tag.getArtist(), "Oneheart; Reidenshi");
+        assertEquals(tag.getTitle(), "snowfall");
 
         // Переименовываем обратно для последующих тестов
-        Path expectedMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "ЛЮБЭ, 37R_-_Давай_за_жизнь_(Phonk_Remix).mp3");
+        Path expectedMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "Oneheart, Reidenshi_-_snowfall.mp3");
         Files.move(expectedMp3File, originalMp3File);
     }
 

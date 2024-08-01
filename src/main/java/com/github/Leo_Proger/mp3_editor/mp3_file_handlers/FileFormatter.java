@@ -8,9 +8,10 @@ import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.id3.ID3v1Tag;
+import org.jaudiotagger.tag.id3.ID3v24Tag;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -48,12 +49,13 @@ public class FileFormatter {
         put("my_lane", "my!lane");
         put("antxres", "AntXres");
         put("ya_h", "Ya$h");
-        put("am_n", "Amøn");
-        put("amon", "Amøn");
-        put("amøn", "Amøn");
-        put("voj", "VØJ");
-        put("v_j", "VØJ");
-        put("vj", "VØJ");
+        put("am_n", "Amon");
+        put("amon", "Amon");
+        put("amøn", "Amon");
+        put("voj", "VOJ");
+        put("v_j", "VOJ");
+        put("vj", "VOJ");
+        put("vøj", "VOJ");
         put("scxr_soul", "SCXR_SOUL");
         put("swerve", "$werve");
         put("werve", "$werve");
@@ -61,15 +63,16 @@ public class FileFormatter {
         put("oldflop", "OLDFLOP");
         put("igres", "iGRES");
         put("finivoid", "FINIVOID");
-        put("oskalizator.", "oskalizator");
-        put("vvpskvd.", "vvpskvd");
+        put("oskalizator", "oskalizator.");
+        put("vvpskvd", "vvpskvd.");
         put("westliberty's", "WESTLIBERTY'S");
         put("westlibertys", "WESTLIBERTY'S");
         put("westliberty s", "WESTLIBERTY'S");
         put("altare", "Altare");
-        put("neheart", "Øneheart");
-        put("_neheart", "Øneheart");
-        put("oneheart", "Øneheart");
+        put("neheart", "Oneheart");
+        put("_neheart", "Oneheart");
+        put("oneheart", "Oneheart");
+        put("øneheart", "Oneheart");
         put("archez", "ARCHEZ");
         put("509 icario", "509 $ICARIO");
         put("509 sicario", "509 $ICARIO");
@@ -208,9 +211,12 @@ public class FileFormatter {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
-        // Одновременно преобразуем строку в объект файла, чтобы можно было работать с метаданными, и проверяем файл на ошибки
+        // Преобразуем в аудиофайл и сразу же проверяем на ошибки
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
-        Tag tag = audioFile.getTag();
+
+        AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
+        ID3v1Tag id3v1Tag = new ID3v1Tag();
+
         String[] parts = newFilename.replace(".mp3", "").split("_-_");
 
         // Проверяем есть ли исполнители, у которых не надо заменять нижнее подчеркивание на пробел
@@ -226,16 +232,19 @@ public class FileFormatter {
         String formattedArtistForMetadata = String.join("; ", artistsForMetadata);
         String formattedTitleForMetadata = parts[1].replaceAll("_", " ");
 
-        // Добавление стандартных метаданных, которые обязательно должны присутствовать и поддерживаться плеерами
-        tag.setField(FieldKey.ARTIST, formattedArtistForMetadata);
-        tag.setField(FieldKey.TITLE, formattedTitleForMetadata);
+        // Добавляем данные в ID3v1 тег
+        id3v1Tag.setArtist(formattedArtistForMetadata);
+        id3v1Tag.setTitle(formattedTitleForMetadata);
 
-        // Добавление дополнительных метаданных для более широкой совместимости
-        tag.setField(FieldKey.ARTISTS, formattedArtistForMetadata);
-        if (tag instanceof AbstractID3v2Tag id3v2Tag) {
-            id3v2Tag.setField(FieldKey.ARTIST, formattedArtistForMetadata);
-            id3v2Tag.setField(FieldKey.ARTISTS, formattedArtistForMetadata);
-        }
+        audioFile.setTag(id3v1Tag);
+
+        // Добавляем данные в ID3v2 тег
+        id3v2Tag.setField(FieldKey.ARTIST, formattedArtistForMetadata);
+        id3v2Tag.setField(FieldKey.TITLE, formattedTitleForMetadata);
+        id3v2Tag.setField(FieldKey.ARTISTS, formattedArtistForMetadata);
+
+        audioFile.setTag(id3v2Tag);
+
         // Сохранение изменений
         audioFile.commit();
     }
