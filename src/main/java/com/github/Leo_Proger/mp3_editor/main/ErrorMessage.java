@@ -9,7 +9,8 @@ public enum ErrorMessage {
     UNKNOWN_ERROR_FORMATTING_FILE("Неизвестная ошибка при форматировании файла"),
     FOLDER_READING_ERROR("Ошибка при чтении папки"),
     FORMAT_INCONSISTENCY_ERROR("Файл не соответствует формату и не может быть отформатирован"),
-    ERROR_DISPLAYING_MODIFIER_TRACKS("Ошибка при выводе измененных треков");
+    ERROR_DISPLAYING_MODIFIER_TRACKS("Ошибка при выводе измененных треков"),
+    FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR("Файл занят другим процессом");
 
     private final String message;
 

@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +57,10 @@ public class FileManager {
                             errorTracks.put(path, FILE_CORRUPTED_ERROR.getMessage());
                         } catch (FileAlreadyExistsException e) {
                             errorTracks.put(path, FILE_ALREADY_EXISTS_ERROR.getMessage().formatted(fromDir));
+                        } catch (FileSystemException e) {
+                            errorTracks.put(path, FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR.getMessage());
                         } catch (Exception e) {
+                            LOGGER.error(String.valueOf(e));
                             errorTracks.put(path, UNKNOWN_ERROR_FORMATTING_FILE.getMessage());
                         }
                         // Перемещаем файл, если moveFiles == true, и он не находится в errorTracks
