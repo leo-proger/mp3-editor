@@ -1,8 +1,8 @@
 package com.github.Leo_Proger.mp3handlers;
 
-import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.FileFormatter;
-import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.Mp3FileFormattingException;
-import com.github.Leo_Proger.mp3_editor.mp3_file_handlers.FileManager;
+import com.github.Leo_Proger.mp3_file_handlers.FileFormatter;
+import com.github.Leo_Proger.mp3_file_handlers.FileManager;
+import com.github.Leo_Proger.mp3_file_handlers.Mp3FileFormattingException;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -71,7 +71,7 @@ public class FileFormatterTest {
     @Test
     public void testEditMetadata() throws InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
         // Форматируем и переименовываем файл
-        Path originalMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "Øneheart, Reidenshi - snowfall.mp3");
+        Path originalMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "Øneheart, reidenshi - snowfall.mp3");
 
         Path newMp3Filename = formatter.format(originalMp3File);
         FileManager.renameFile(originalMp3File, newMp3Filename);
@@ -80,11 +80,11 @@ public class FileFormatterTest {
         Mp3File mp3FileObj = new Mp3File(newMp3Filename);
         ID3v2 tag = mp3FileObj.getId3v2Tag();
 
-        assertEquals(tag.getArtist(), "Oneheart; Reidenshi");
+        assertEquals(tag.getArtist(), "Oneheart; reidenshi");
         assertEquals(tag.getTitle(), "snowfall");
 
         // Переименовываем обратно для последующих тестов
-        Path expectedMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "Oneheart, Reidenshi_-_snowfall.mp3");
+        Path expectedMp3File = Path.of(BASE_RESOURCES_PATH.toString(), "Oneheart, reidenshi_-_snowfall.mp3");
         Files.move(expectedMp3File, originalMp3File);
     }
 
