@@ -35,8 +35,8 @@ public class FileManager {
     /**
      * Метод форматирует и сразу же перемещает каждый mp3 файл в целевую папку
      */
-    private static void formatAndMoveFiles(Path fromDir, Path toDir, boolean moveFiles) {
-        try (Stream<Path> paths = Files.list(fromDir)) {
+    private static void formatAndMoveFiles(boolean moveFiles) {
+        try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
             paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString()
                             .toLowerCase()
@@ -56,7 +56,7 @@ public class FileManager {
                         } catch (InvalidAudioFrameException e) {
                             errorTracks.put(path, FILE_CORRUPTED_ERROR.getMessage());
                         } catch (FileAlreadyExistsException e) {
-                            errorTracks.put(path, FILE_ALREADY_EXISTS_ERROR.getMessage().formatted(fromDir));
+                            errorTracks.put(path, FILE_ALREADY_EXISTS_ERROR.getMessage().formatted(SOURCE_PATH));
                         } catch (FileSystemException e) {
                             errorTracks.put(path, FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR.getMessage());
                         } catch (org.jaudiotagger.audio.exceptions.CannotWriteException e) {
@@ -67,7 +67,7 @@ public class FileManager {
                         }
                         // Перемещаем файл, если moveFiles == true, и он не находится в errorTracks
                         if (moveFiles && !errorTracks.containsKey(path)) {
-                            moveFile(newPath, toDir);
+                            moveFile(newPath, TARGET_PATH);
                         }
                         // Перепроверяем, что файл не находится в errorTracks, и добавляем в changedTracks
                         if (!errorTracks.containsKey(newPath)) {
@@ -75,7 +75,7 @@ public class FileManager {
                         }
                     });
         } catch (IOException e) {
-            LOGGER.debug("{}: {}\nПуть: {}", e, FOLDER_READING_ERROR.getMessage(), fromDir);
+            LOGGER.debug("{}: {}\nПуть: {}", e, FOLDER_READING_ERROR.getMessage(), SOURCE_PATH);
         }
     }
 
@@ -122,7 +122,7 @@ public class FileManager {
     }
 
     public static void run(boolean moveFiles) {
-        formatAndMoveFiles(SOURCE_PATH, TARGET_PATH, moveFiles);
+        formatAndMoveFiles(moveFiles);
         printResults();
     }
 }

@@ -42,9 +42,7 @@ public class Config {
     public static List<String> ARTIST_SEPARATORS;
 
     /**
-     * Метод, который присваивает значения переменным из json файлов
-     *
-     * @throws IOException ошибка чтения json файла
+     * Метод, который присваивает значения переменным из Json файлов
      */
     private static void loadDataFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
