@@ -10,7 +10,8 @@ public enum ErrorMessage {
     FOLDER_READING_ERROR("Ошибка при чтении папки"),
     FORMAT_INCONSISTENCY_ERROR("Файл не соответствует формату и не может быть отформатирован"),
     ERROR_DISPLAYING_MODIFIER_TRACKS("Ошибка при выводе измененных треков"),
-    FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR("Файл занят другим процессом");
+    FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR("Файл занят другим процессом"),
+    FILE_ACCESS_RESTRICTED("Доступ к файлу ограничен");
 
     private final String message;
 

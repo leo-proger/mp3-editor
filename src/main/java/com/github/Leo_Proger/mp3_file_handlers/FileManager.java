@@ -59,6 +59,8 @@ public class FileManager {
                             errorTracks.put(path, FILE_ALREADY_EXISTS_ERROR.getMessage().formatted(fromDir));
                         } catch (FileSystemException e) {
                             errorTracks.put(path, FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR.getMessage());
+                        } catch (org.jaudiotagger.audio.exceptions.CannotWriteException e) {
+                            errorTracks.put(path, FILE_ACCESS_RESTRICTED.getMessage());
                         } catch (Exception e) {
                             LOGGER.error(String.valueOf(e));
                             errorTracks.put(path, UNKNOWN_ERROR_FORMATTING_FILE.getMessage());
