@@ -39,7 +39,6 @@ public class FilenameFormatter {
             result.append(CHARACTERS_TO_REPLACE.getOrDefault(c, c));
         }
         newFilename = result.toString();
-        System.out.println(newFilename);
     }
 
     /**
