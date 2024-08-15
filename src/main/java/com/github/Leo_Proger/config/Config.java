@@ -1,4 +1,4 @@
-package com.github.Leo_Proger.main;
+package com.github.Leo_Proger.config;
 
 import java.nio.file.Path;
 

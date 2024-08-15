@@ -2,7 +2,7 @@ package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.Leo_Proger.main.ErrorMessage;
+import com.github.Leo_Proger.config.ErrorMessage;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;

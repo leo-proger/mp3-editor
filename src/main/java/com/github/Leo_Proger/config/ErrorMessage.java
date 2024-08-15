@@ -1,4 +1,4 @@
-package com.github.Leo_Proger.main;
+package com.github.Leo_Proger.config;
 
 public enum ErrorMessage {
     FILE_ALREADY_EXISTS_ERROR("Файл уже существует в папке \"%s\""),

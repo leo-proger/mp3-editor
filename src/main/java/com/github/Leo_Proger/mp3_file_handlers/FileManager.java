@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.github.Leo_Proger.main.Config.SOURCE_PATH;
-import static com.github.Leo_Proger.main.Config.TARGET_PATH;
-import static com.github.Leo_Proger.main.ErrorMessage.*;
+import static com.github.Leo_Proger.config.Config.SOURCE_PATH;
+import static com.github.Leo_Proger.config.Config.TARGET_PATH;
+import static com.github.Leo_Proger.config.ErrorMessage.*;
 
 public class FileManager {
     static {
