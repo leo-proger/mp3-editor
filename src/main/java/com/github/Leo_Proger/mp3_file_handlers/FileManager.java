@@ -18,7 +18,7 @@ import static com.github.Leo_Proger.config.ErrorMessage.*;
 
 public class FileManager {
     static {
-        LOGGER = LoggerFactory.getLogger(FileFormatter.class);
+        LOGGER = LoggerFactory.getLogger(FileManager.class);
     }
     private static final Logger LOGGER;
 
