@@ -22,6 +22,11 @@ public class Config {
     public static final String STRICT_FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.,!$'øØ ]+)\\.mp3$";
 
     /**
+     * Символы, которые нужно заменить в строке
+     */
+    public static Map<Character, Character> CHARACTERS_TO_REPLACE;
+
+    /**
      * Реклама, которую нужно удалить из имени файла
      */
     public static Set<String> BLACKLIST;
@@ -42,12 +47,17 @@ public class Config {
     public static List<String> ARTIST_SEPARATORS;
 
     /**
-     * Метод, который присваивает значения переменным из Json файлов
+     * Метод, который присваивает значения из Json файлов переменным: CHARACTERS_TO_REPLACE, BLACKLIST,
+     * CORRECT_ARTIST_NAMES, ARTISTS_EXCEPTIONS, ARTIST_SEPARATORS
      */
     private static void loadDataFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
+            File charactersToReplaceFile = new File("src/main/resources/characters_to_replace.json");
+            CHARACTERS_TO_REPLACE = objectMapper.readValue(charactersToReplaceFile, new TypeReference<>() {
+            });
+
             File blacklistFile = new File("src/main/resources/blacklist.json");
             List<String> blacklistList = objectMapper.readValue(blacklistFile, new TypeReference<>() {
             });

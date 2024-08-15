@@ -29,6 +29,20 @@ public class FilenameFormatter {
     private static String newFilename;
 
     /**
+     * Заменяет символы
+     *
+     * @see Config#CHARACTERS_TO_REPLACE
+     */
+    private static void replaceCharacters() {
+        StringBuilder result = new StringBuilder();
+        for (char c : newFilename.toCharArray()) {
+            result.append(CHARACTERS_TO_REPLACE.getOrDefault(c, c));
+        }
+        newFilename = result.toString();
+        System.out.println(newFilename);
+    }
+
+    /**
      * Удаляет рекламу, находящуюся в BLACKLIST, из имени файла
      *
      * @see Config#BLACKLIST
@@ -109,6 +123,7 @@ public class FilenameFormatter {
     public static String run(String filename) throws Mp3FileFormattingException {
         initialFile = newFilename = filename;
 
+        replaceCharacters();
         removeAds();
         replaceSpacesAndFixCommas();
         replaceArtistSeparators();
