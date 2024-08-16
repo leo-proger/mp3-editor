@@ -90,6 +90,14 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <!-- Maven Shade Plugin для создания JAR со всеми зависимостями -->
             <plugin>
@@ -130,10 +138,11 @@
                             <headerType>console</headerType>
                             <outfile>target/${project.artifactId}.exe</outfile>
                             <jar>target/${project.artifactId}-${project.version}.jar</jar>
-                            <errTitle>${project.name}</errTitle>
+                            <errTitle>Error in launch4j plugin</errTitle>
                             <classPath>
                                 <mainClass>com.github.Leo_Proger.main.Main</mainClass>
                                 <addDependencies>true</addDependencies>
+                                <preCp>anything</preCp>
                             </classPath>
                             <jre>
                                 <minVersion>1.8.0</minVersion>

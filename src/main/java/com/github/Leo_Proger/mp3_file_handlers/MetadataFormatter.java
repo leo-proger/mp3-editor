@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.github.Leo_Proger.config.Config.ARTISTS_EXCEPTIONS;
+import static com.github.Leo_Proger.config.Config.ARTISTS_EXCLUSIONS;
 import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Filename;
 
 public class MetadataFormatter {
@@ -47,7 +47,7 @@ public class MetadataFormatter {
         // Проверяет наличие исполнителей, у которых не надо заменять нижнее подчеркивание на пробел
         Set<String> artistsForMetadata = new LinkedHashSet<>();
         for (String artist : parts[0].split(", ")) {
-            if (ARTISTS_EXCEPTIONS.contains(artist)) {
+            if (ARTISTS_EXCLUSIONS.contains(artist)) {
                 artistsForMetadata.add(artist);
             } else {
                 artistsForMetadata.add(artist.replaceAll("_", " "));

@@ -47,7 +47,7 @@ public class FileFormatTest {
     }
 
     @Test
-    public void testRenameFile() throws Mp3FileFormattingException, IOException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
+    public void testRenameFile() throws Mp3FileFormattingException {
         // Случай 1
         String original1 = "lxst cxntury  ,Цой x aboba feat aboab ft. name x sosy_jopy - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3";
 
