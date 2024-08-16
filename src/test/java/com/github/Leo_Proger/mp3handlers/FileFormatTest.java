@@ -16,6 +16,8 @@ import org.jaudiotagger.tag.TagException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileFormatTest {
 
     private static FileFormatter formatter;
+    private static Logger LOGGER;
 
     @TempDir
     Path tempDir;
@@ -34,42 +37,43 @@ public class FileFormatTest {
 
     @BeforeEach
     public void setup() throws IOException {
+        LOGGER = LoggerFactory.getLogger(FileFormatTest.class);
+
         formatter = new FileFormatter();
 
-        // Копируем все файлы из BASE_RESOURCES_PATH во временную директорию
-        Files.list(BASE_RESOURCES_PATH).forEach(file -> {
-            try {
-                Files.copy(file, tempDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        // Копирует все файлы из BASE_RESOURCES_PATH во временную директорию
+        try (var files = Files.list(BASE_RESOURCES_PATH)) {
+            files.forEach(file -> {
+                try {
+                    Files.copy(file, tempDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            });
+        }
     }
 
     @Test
     public void testRenameFile() throws Mp3FileFormattingException {
         // Случай 1
         String original1 = "lxst cxntury  ,Цой x aboba feat aboab ft. name x sosy_jopy - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3";
+        String expected1 = "LXST_CXNTURY, Цой, aboba, aboab, name, sosy_jopy_-_Кончится_Лето.mp3";
 
         String formatted1 = FilenameFormatter.run(original1);
-
-        String expected1 = "LXST_CXNTURY, Цой, aboba, aboab, name, sosy_jopy_-_Кончится_Лето.mp3";
         assertEquals(formatted1, expected1);
 
         // Случай 2
         String original2 = "Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video)--___(EEMUSIC.ru).mp3";
+        String expected2 = "Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3";
 
         String formatted2 = FilenameFormatter.run(original2);
-
-        String expected2 = "Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3";
         assertEquals(formatted2, expected2);
 
         // Случай 3
         String original3 = "Jason Paris, Amøn - Heading North.mp3";
+        String expected3 = "Jason_Paris, Amon_-_Heading_North.mp3";
 
         String formatted3 = FilenameFormatter.run(original3);
-
-        String expected3 = "Jason_Paris, Amon_-_Heading_North.mp3";
         assertEquals(formatted3, expected3);
 
         // Случай 4
@@ -80,7 +84,8 @@ public class FileFormatTest {
     }
 
     @Test
-    public void testEditMetadata() throws InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
+    public void testEditMetadata() throws
+            InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
         // Форматируем файл
         Path original = tempDir.resolve("Øneheart, reidenshi - snowfall.mp3");
 
