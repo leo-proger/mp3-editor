@@ -26,11 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileFormatTest {
 
+    private static FileFormatter formatter;
+
     @TempDir
     Path tempDir;
     Path BASE_RESOURCES_PATH = Path.of("src/test/resources/com/github/Leo_Proger/");
-
-    private static FileFormatter formatter;
 
     @BeforeEach
     public void setup() throws IOException {
