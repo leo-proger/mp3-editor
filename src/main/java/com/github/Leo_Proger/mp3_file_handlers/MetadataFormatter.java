@@ -1,5 +1,6 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
+import com.github.Leo_Proger.config.Config;
 import com.github.Leo_Proger.config.ErrorMessage;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -29,48 +30,126 @@ public class MetadataFormatter {
      * 1. Нижние подчеркивания заменяются на пробелы
      * <p>
      * 2. Запятая заменяется на точку с запятой
+     *
+     * @param mp3File     Путь к MP3 файлу
+     * @param newFilename Новое имя файла для форматирования метаданных
+     * @throws IOException                При ошибках ввода-вывода
+     * @throws CannotReadException        При невозможности прочитать файл
+     * @throws TagException               При ошибках работы с тегами
+     * @throws InvalidAudioFrameException При некорректном аудио фрейме
+     * @throws ReadOnlyFileException      Если файл доступен только для чтения
+     * @throws CannotWriteException       При невозможности записи в файл
+     * @throws Mp3FileFormattingException Если имя файла не соответствует шаблону
+     * @see Config#FILENAME_FORMAT
      */
     public static void run(Path mp3File, String newFilename) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
+        validateFilename(mp3File, newFilename);
+
+        AudioFile audioFile = readAudioFile(mp3File);
+        String[] parts = splitFilename(newFilename);
+        String formattedArtist = formatArtists(parts[0]);
+        String formattedTitle = formatTitle(parts[1]);
+
+        updateTags(audioFile, formattedArtist, formattedTitle);
+        saveChanges(audioFile);
+    }
+
+    /**
+     * Проверяет валидность имени MP3 файла.
+     *
+     * @param mp3File     Путь к MP3 файлу
+     * @param newFilename Новое имя файла
+     * @throws Mp3FileFormattingException Если имя файла не соответствует шаблону
+     * @see Config#FILENAME_FORMAT
+     */
+    private static void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
-        // Преобразует в аудиофайл. Проверяет на ошибки
-        AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
+    }
 
-        // Получает теги из аудиофайла
-        ID3v1Tag id3v1Tag = new ID3v1Tag();
-        AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
+    /**
+     * Читает аудиофайл.
+     *
+     * @param mp3File Путь к MP3 файлу
+     * @return AudioFile объект
+     * @throws CannotReadException        При невозможности прочитать файл
+     * @throws IOException                При ошибках ввода-вывода
+     * @throws TagException               При ошибках работы с тегами
+     * @throws ReadOnlyFileException      Если файл доступен только для чтения
+     * @throws InvalidAudioFrameException При некорректном аудио фрейме
+     */
+    private static AudioFile readAudioFile(Path mp3File) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+        return AudioFileIO.read(mp3File.toFile());
+    }
 
-        // Разделяет на части с исполнителями и названием трека
-        String[] parts = newFilename.replace(".mp3", "").split("_-_");
+    /**
+     * Разделяет имя MP3 файла на части.
+     *
+     * @param filename Имя MP3 файла
+     * @return Массив из двух элементов: исполнители и название трека
+     */
+    private static String[] splitFilename(String filename) {
+        return filename.replace(".mp3", "").split("_-_");
+    }
 
-        // Проверяет наличие исполнителей, у которых не надо заменять нижнее подчеркивание на пробел
+    /**
+     * Форматирует строку с исполнителями специально для метаданных.
+     *
+     * @param artists Строка с исполнителями
+     * @return Отформатированная строка с исполнителями
+     */
+    private static String formatArtists(String artists) {
         Set<String> artistsForMetadata = new LinkedHashSet<>();
-        for (String artist : parts[0].split(", ")) {
+        for (String artist : artists.split(", ")) {
             if (ARTISTS_EXCLUSIONS.contains(artist)) {
                 artistsForMetadata.add(artist);
             } else {
                 artistsForMetadata.add(artist.replaceAll("_", " "));
             }
         }
-        // Форматированные исполнители и название трека
-        String formattedArtistForMetadata = String.join("; ", artistsForMetadata);
-        String formattedTitleForMetadata = parts[1].replaceAll("_", " ");
+        return String.join("; ", artistsForMetadata);
+    }
 
-        // Добавляет данные в ID3v1 тег
-        id3v1Tag.setArtist(formattedArtistForMetadata);
-        id3v1Tag.setTitle(formattedTitleForMetadata);
+    /**
+     * Форматирует название трека специально для метаданных.
+     *
+     * @param title Название трека
+     * @return Отформатированное название трека
+     */
+    private static String formatTitle(String title) {
+        return title.replaceAll("_", " ");
+    }
 
+    /**
+     * Обновляет теги аудиофайла.
+     *
+     * @param audioFile       AudioFile объект
+     * @param formattedArtist Отформатированная строка с исполнителями
+     * @param formattedTitle  Отформатированное название трека
+     * @throws TagException При ошибках работы с тегами
+     */
+    private static void updateTags(AudioFile audioFile, String formattedArtist, String formattedTitle) throws TagException {
+        ID3v1Tag id3v1Tag = new ID3v1Tag();
+        AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
+
+        id3v1Tag.setArtist(formattedArtist);
+        id3v1Tag.setTitle(formattedTitle);
         audioFile.setTag(id3v1Tag);
 
-        // Добавляет данные в ID3v2 тег
-        id3v2Tag.setField(FieldKey.ARTIST, formattedArtistForMetadata);
-        id3v2Tag.setField(FieldKey.TITLE, formattedTitleForMetadata);
-        id3v2Tag.setField(FieldKey.ARTISTS, formattedArtistForMetadata);
-
+        id3v2Tag.setField(FieldKey.ARTIST, formattedArtist);
+        id3v2Tag.setField(FieldKey.TITLE, formattedTitle);
+        id3v2Tag.setField(FieldKey.ARTISTS, formattedArtist);
         audioFile.setTag(id3v2Tag);
+    }
 
-        // Сохранение изменений
+    /**
+     * Сохраняет изменения в аудиофайле.
+     *
+     * @param audioFile AudioFile объект
+     * @throws CannotWriteException При невозможности записи в файл
+     */
+    private static void saveChanges(AudioFile audioFile) throws CannotWriteException {
         audioFile.commit();
     }
 }
