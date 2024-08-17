@@ -23,12 +23,12 @@ import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Fi
 
 public class MetadataFormatter {
     /**
-     * Добавляет mp3 файлу метаданные (название трека и исполнителей).
-     * Форматирование производится согласно такому формату:
+     * Добавляет MP3 файлу метаданные (название трека и исполнителей).
+     * Форматирование производится согласно следующим правилам:
      * <p>
-     * 1. Заменяются все нижние подчеркивания на пробелы.
+     * 1. Нижние подчеркивания заменяются на пробелы
      * <p>
-     * 2. Заменяется запятая на точку с запятой.
+     * 2. Запятая заменяется на точку с запятой
      */
     public static void run(Path mp3File, String newFilename) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
@@ -37,11 +37,11 @@ public class MetadataFormatter {
         // Преобразует в аудиофайл. Проверяет на ошибки
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
 
-        // Получаем теги из аудиофайла
+        // Получает теги из аудиофайла
         ID3v1Tag id3v1Tag = new ID3v1Tag();
         AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
 
-        // Разделяет на часть с исполнителями и часть с названием трека
+        // Разделяет на части с исполнителями и названием трека
         String[] parts = newFilename.replace(".mp3", "").split("_-_");
 
         // Проверяет наличие исполнителей, у которых не надо заменять нижнее подчеркивание на пробел

@@ -19,7 +19,7 @@ public class Config {
     public static final Path SOURCE_PATH = Path.of(System.getenv("MP3_EDITOR_SOURCE_PATH"));
     public static final Path TARGET_PATH = Path.of(System.getenv("MP3_EDITOR_TARGET_PATH"));
 
-    public static final String STRICT_FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.,!$'øØ ]+)\\.mp3$";
+    public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.,!$'øØ ]+)\\.mp3$";
 
     /**
      * Символы, которые нужно заменить в строке
@@ -47,8 +47,8 @@ public class Config {
     public static List<String> ARTIST_SEPARATORS;
 
     /**
-     * Метод, который присваивает значения из Json файлов переменным: CHARACTERS_TO_REPLACE, BLACKLIST,
-     * CORRECT_ARTIST_NAMES, ARTISTS_EXCEPTIONS, ARTIST_SEPARATORS
+     * Метод, который присваивает значения из json файлов переменным: CHARACTERS_TO_REPLACE, BLACKLIST,
+     * CORRECT_ARTIST_NAMES, ARTISTS_EXCEPTIONS, ARTIST_SEPARATORS.
      */
     private static void loadDataFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -61,7 +61,7 @@ public class Config {
             CHARACTERS_TO_REPLACE = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения Json файла: " + e.getMessage());
+            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
         }
 
         // Загрузка данных из blacklist.json
@@ -73,7 +73,7 @@ public class Config {
             });
             BLACKLIST = new HashSet<>(blacklistList);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения Json файла: " + e.getMessage());
+            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
         }
 
         // Загрузка данных из correct_artist_names.json
@@ -84,7 +84,7 @@ public class Config {
             CORRECT_ARTIST_NAMES = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения Json файла: " + e.getMessage());
+            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
         }
 
         // Загрузка данных из artists_exclusions.json
@@ -96,7 +96,7 @@ public class Config {
             });
             ARTISTS_EXCLUSIONS = new HashSet<>(artistsExclusionsList);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения Json файла: " + e.getMessage());
+            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
         }
 
         // Загрузка данных из artist_separators.json
@@ -107,7 +107,7 @@ public class Config {
             ARTIST_SEPARATORS = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения Json файла: " + e.getMessage());
+            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
         }
     }
 }

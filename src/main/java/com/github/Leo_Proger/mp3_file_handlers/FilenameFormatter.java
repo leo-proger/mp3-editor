@@ -29,7 +29,27 @@ public class FilenameFormatter {
     private static String newFilename;
 
     /**
-     * Заменяет символы
+     * Главный метод, запускающий все остальные методы.
+     *
+     * @param filename имя файла, которое нужно отформатировать
+     * @return отформатированное имя
+     * @throws Mp3FileFormattingException если {@code filename} не является именем файла или оно не соответствует шаблону MP3 файла.
+     * @see Config#FILENAME_FORMAT
+     */
+    public static String run(String filename) throws Mp3FileFormattingException {
+        initialFile = newFilename = filename;
+
+        replaceCharacters();
+        removeAds();
+        replaceSpacesAndFixCommas();
+        replaceArtistSeparators();
+        correctArtistNames();
+
+        return newFilename;
+    }
+
+    /**
+     * Заменяет символы.
      *
      * @see Config#CHARACTERS_TO_REPLACE
      */
@@ -42,7 +62,7 @@ public class FilenameFormatter {
     }
 
     /**
-     * Удаляет рекламу, находящуюся в BLACKLIST, из имени файла
+     * Удаляет рекламу, находящуюся в BLACKLIST, из имени файла.
      *
      * @see Config#BLACKLIST
      */
@@ -54,7 +74,7 @@ public class FilenameFormatter {
     }
 
     /**
-     * Заменяет все пробелы на нижнее подчеркивание и "поправляет" запятую
+     * Заменяет все пробелы на нижнее подчеркивание и "поправляет" запятую.
      */
     private static void replaceSpacesAndFixCommas() {
         newFilename = newFilename
@@ -63,7 +83,7 @@ public class FilenameFormatter {
     }
 
     /**
-     * Заменяет все разделители, перечисленные в ARTIST_SEPARATORS, на запятую
+     * Заменяет все разделители, перечисленные в ARTIST_SEPARATORS, на запятую.
      *
      * @throws Mp3FileFormattingException если в имени файла нет "_-_".
      * @see Config#ARTIST_SEPARATORS
@@ -74,7 +94,7 @@ public class FilenameFormatter {
             throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
 
-        // Разделяет на часть с исполнителями и часть с названием трека
+        // Разделяет на части с исполнителями и названием трека
         String[] parts = newFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
@@ -90,7 +110,7 @@ public class FilenameFormatter {
 
 
     /**
-     * Ищет в имени файла ключи (некорректные имена исполнителей) и заменяет их на значения (корректные имена исполнителей)
+     * Ищет в имени файла ключи (некорректные имена исполнителей) и заменяет их на значения (корректные имена исполнителей).
      *
      * @throws Mp3FileFormattingException если имя файла некорректно
      * @see Config#CORRECT_ARTIST_NAMES
@@ -117,17 +137,5 @@ public class FilenameFormatter {
             }
         }
         newFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
-    }
-
-    public static String run(String filename) throws Mp3FileFormattingException {
-        initialFile = newFilename = filename;
-
-        replaceCharacters();
-        removeAds();
-        replaceSpacesAndFixCommas();
-        replaceArtistSeparators();
-        correctArtistNames();
-
-        return newFilename;
     }
 }
