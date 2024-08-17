@@ -37,8 +37,11 @@ public class FileFormatter {
      * @return новый файл с отформатированными именем и метаданными
      */
     public Path format(Path mp3File) throws Mp3FileFormattingException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
-        String newFilename = FilenameFormatter.run(mp3File.getFileName().toString());
-        MetadataFormatter.run(mp3File, newFilename);
+        FilenameFormatter filenameFormatter = new FilenameFormatter();
+        MetadataFormatter metadataFormatter = new MetadataFormatter();
+
+        String newFilename = filenameFormatter.run(mp3File.getFileName().toString());
+        metadataFormatter.run(mp3File, newFilename);
 
         return mp3File.getParent().resolve(newFilename);
     }

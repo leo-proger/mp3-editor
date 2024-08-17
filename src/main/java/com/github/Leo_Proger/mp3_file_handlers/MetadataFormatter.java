@@ -42,7 +42,7 @@ public class MetadataFormatter {
      * @throws Mp3FileFormattingException Если имя файла не соответствует шаблону
      * @see Config#FILENAME_FORMAT
      */
-    public static void run(Path mp3File, String newFilename) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
+    public void run(Path mp3File, String newFilename) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
         validateFilename(mp3File, newFilename);
 
         AudioFile audioFile = readAudioFile(mp3File);
@@ -62,7 +62,7 @@ public class MetadataFormatter {
      * @throws Mp3FileFormattingException Если имя файла не соответствует шаблону
      * @see Config#FILENAME_FORMAT
      */
-    private static void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
+    private void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
@@ -79,7 +79,7 @@ public class MetadataFormatter {
      * @throws ReadOnlyFileException      Если файл доступен только для чтения
      * @throws InvalidAudioFrameException При некорректном аудио фрейме
      */
-    private static AudioFile readAudioFile(Path mp3File) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+    private AudioFile readAudioFile(Path mp3File) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
         return AudioFileIO.read(mp3File.toFile());
     }
 
@@ -89,7 +89,7 @@ public class MetadataFormatter {
      * @param filename Имя MP3 файла
      * @return Массив из двух элементов: исполнители и название трека
      */
-    private static String[] splitFilename(String filename) {
+    private String[] splitFilename(String filename) {
         return filename.replace(".mp3", "").split("_-_");
     }
 
@@ -99,7 +99,7 @@ public class MetadataFormatter {
      * @param artists Строка с исполнителями
      * @return Отформатированная строка с исполнителями
      */
-    private static String formatArtists(String artists) {
+    private String formatArtists(String artists) {
         Set<String> artistsForMetadata = new LinkedHashSet<>();
         for (String artist : artists.split(", ")) {
             if (ARTISTS_EXCLUSIONS.contains(artist)) {
@@ -117,7 +117,7 @@ public class MetadataFormatter {
      * @param title Название трека
      * @return Отформатированное название трека
      */
-    private static String formatTitle(String title) {
+    private String formatTitle(String title) {
         return title.replaceAll("_", " ");
     }
 
@@ -129,7 +129,7 @@ public class MetadataFormatter {
      * @param formattedTitle  Отформатированное название трека
      * @throws TagException При ошибках работы с тегами
      */
-    private static void updateTags(AudioFile audioFile, String formattedArtist, String formattedTitle) throws TagException {
+    private void updateTags(AudioFile audioFile, String formattedArtist, String formattedTitle) throws TagException {
         ID3v1Tag id3v1Tag = new ID3v1Tag();
         AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
 
@@ -149,7 +149,7 @@ public class MetadataFormatter {
      * @param audioFile AudioFile объект
      * @throws CannotWriteException При невозможности записи в файл
      */
-    private static void saveChanges(AudioFile audioFile) throws CannotWriteException {
+    private void saveChanges(AudioFile audioFile) throws CannotWriteException {
         audioFile.commit();
     }
 }

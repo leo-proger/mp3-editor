@@ -18,7 +18,7 @@ public class FilenameFormatter {
      *
      * @see FilenameFormatter#newFilename
      */
-    private static String initialFile;
+    private String initialFile;
 
     /**
      * Имя файла, которое копируется из initialFile.
@@ -26,7 +26,7 @@ public class FilenameFormatter {
      *
      * @see FilenameFormatter#initialFile
      */
-    private static String newFilename;
+    private String newFilename;
 
     /**
      * Главный метод, запускающий все остальные методы.
@@ -36,7 +36,7 @@ public class FilenameFormatter {
      * @throws Mp3FileFormattingException если {@code filename} не является именем файла или оно не соответствует шаблону MP3 файла.
      * @see Config#FILENAME_FORMAT
      */
-    public static String run(String filename) throws Mp3FileFormattingException {
+    public String run(String filename) throws Mp3FileFormattingException {
         initialFile = newFilename = filename;
 
         replaceCharacters();
@@ -53,7 +53,7 @@ public class FilenameFormatter {
      *
      * @see Config#CHARACTERS_TO_REPLACE
      */
-    private static void replaceCharacters() {
+    private void replaceCharacters() {
         StringBuilder result = new StringBuilder();
         for (char c : newFilename.toCharArray()) {
             result.append(CHARACTERS_TO_REPLACE.getOrDefault(c, c));
@@ -66,7 +66,7 @@ public class FilenameFormatter {
      *
      * @see Config#BLACKLIST
      */
-    private static void removeAds() {
+    private void removeAds() {
         newFilename = BLACKLIST.stream()
                 .reduce(newFilename, (str, ad) -> str.replaceAll("(?i)" + Pattern.quote(ad), ""))
                 .trim()
@@ -76,7 +76,7 @@ public class FilenameFormatter {
     /**
      * Заменяет все пробелы на нижнее подчеркивание и "поправляет" запятую.
      */
-    private static void replaceSpacesAndFixCommas() {
+    private void replaceSpacesAndFixCommas() {
         newFilename = newFilename
                 .replaceAll(" ", "_")
                 .replaceAll("[\\s_]*,[\\s_]*", ", ");
@@ -88,7 +88,7 @@ public class FilenameFormatter {
      * @throws Mp3FileFormattingException если в имени файла нет "_-_".
      * @see Config#ARTIST_SEPARATORS
      */
-    private static void replaceArtistSeparators() throws Mp3FileFormattingException {
+    private void replaceArtistSeparators() throws Mp3FileFormattingException {
         // Проверка того что в имени файла есть исполнители и название трека, разделенные "_-_"
         if (!newFilename.contains("_-_")) {
             throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
@@ -115,7 +115,7 @@ public class FilenameFormatter {
      * @throws Mp3FileFormattingException если имя файла некорректно
      * @see Config#CORRECT_ARTIST_NAMES
      */
-    private static void correctArtistNames() throws Mp3FileFormattingException {
+    private void correctArtistNames() throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
             throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
         }
