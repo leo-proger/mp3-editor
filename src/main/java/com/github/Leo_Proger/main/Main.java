@@ -8,7 +8,9 @@ import static com.github.Leo_Proger.config.Config.TARGET_PATH;
 
 public class Main {
     public static void main(String[] args) {
-        FileManager.run(true);
+        FileManager fileManager = new FileManager();
+        fileManager.run(true);
+
         ImageCleaner.deleteAllImages(TARGET_PATH);
         exitProgram();
     }

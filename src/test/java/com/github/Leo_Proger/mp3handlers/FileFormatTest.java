@@ -91,7 +91,8 @@ public class FileFormatTest {
 
         Path formatted = formatter.format(original);
 
-        FileManager.renameFile(original, formatted);
+        FileManager fileManager = new FileManager();
+        fileManager.renameFile(original, formatted);
 
         // Проверяем форматирование метаданных
         Mp3File mp3FileObj = new Mp3File(tempDir.resolve(original.getParent().resolve(formatted.getFileName())));
@@ -146,7 +147,8 @@ public class FileFormatTest {
         // Проверяем, что файл существует в folder_from
         assertTrue(Files.exists(fromDir.resolve(file)));
 
-        FileManager.moveFile(fromDir.resolve(file), toDir);
+        FileManager fileManager = new FileManager();
+        fileManager.moveFile(fromDir.resolve(file), toDir);
 
         assertFalse(Files.exists(fromDir.resolve(file)));
         assertTrue(Files.exists(toDir.resolve(file)));
