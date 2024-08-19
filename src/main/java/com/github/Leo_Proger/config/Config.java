@@ -24,7 +24,7 @@ public class Config {
     /**
      * Символы, которые нужно заменить в строке
      */
-    public static Map<Character, Character> CHARACTERS_TO_REPLACE;
+    public static Map<String, String> CHARACTERS_TO_REPLACE;
 
     /**
      * Реклама, которую нужно удалить из имени файла

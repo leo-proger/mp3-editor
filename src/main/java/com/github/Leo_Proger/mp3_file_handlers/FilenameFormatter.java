@@ -56,7 +56,7 @@ public class FilenameFormatter {
     private void replaceCharacters() {
         StringBuilder result = new StringBuilder();
         for (char c : newFilename.toCharArray()) {
-            result.append(CHARACTERS_TO_REPLACE.getOrDefault(c, c));
+            result.append(CHARACTERS_TO_REPLACE.getOrDefault(String.valueOf(c), String.valueOf(c)));
         }
         newFilename = result.toString();
     }
