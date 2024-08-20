@@ -19,7 +19,7 @@ public class Config {
     public static final Path SOURCE_PATH = Path.of(System.getenv("MP3_EDITOR_SOURCE_PATH"));
     public static final Path TARGET_PATH = Path.of(System.getenv("MP3_EDITOR_TARGET_PATH"));
 
-    public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9()\\-_.,!$'øØ ]+)\\.mp3$";
+    public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9ёЁ()\\-_.,!$'øØ]+)\\.mp3$";
 
     /**
      * Символы, которые нужно заменить в строке
