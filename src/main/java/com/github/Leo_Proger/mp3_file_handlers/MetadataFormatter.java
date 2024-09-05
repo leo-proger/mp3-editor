@@ -64,7 +64,7 @@ public class MetadataFormatter {
      */
     private void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(mp3File, ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
+            throw new Mp3FileFormattingException(mp3File, ErrorMessage.INVALID_FORMAT.getMessage());
         }
     }
 

@@ -72,8 +72,8 @@ public class FileManager {
             LOGGER.error("{}. {} - \"{}\"",
                     ++countFiles, errorMessage, errorTrack.getFileName());
         }
-        LOGGER.info("Треки с изменениями: {}", changedTracks.size());
-        LOGGER.info("Треки с ошибками: {}", errorTracks.size());
+        LOGGER.info("Modified files: {}", changedTracks.size());
+        LOGGER.info("Error files: {}", errorTracks.size());
     }
 
     /**
@@ -90,7 +90,7 @@ public class FileManager {
                     .filter(path -> path.toString().toLowerCase().endsWith(".mp3"))
                     .forEach(path -> processFile(path, moveFiles));
         } catch (IOException e) {
-            LOGGER.debug("{}: {}\nПуть: {}", e, FOLDER_READING_ERROR.getMessage(), SOURCE_PATH);
+            LOGGER.debug("{}: {}\nПуть: {}", e, UNABLE_TO_READ_FOLDER.getMessage(), SOURCE_PATH);
         }
     }
 
@@ -131,12 +131,12 @@ public class FileManager {
             // Перемещает файл, если он не существует в целевой папке
             Path targetPath = toDir.resolve(fromFile.getFileName());
             if (Files.exists(targetPath)) {
-                errorTracks.put(fromFile, FILE_ALREADY_EXISTS_ERROR.getMessage().formatted(toDir));
+                errorTracks.put(fromFile, FILE_ALREADY_EXISTS.getMessage().formatted(toDir));
             } else {
                 Files.move(fromFile, targetPath);
             }
         } catch (IOException e) {
-            errorTracks.put(fromFile, ERROR_MOVING_FILE.getMessage());
+            errorTracks.put(fromFile, UNABLE_TO_MOVE_FILE.getMessage());
         }
     }
 
@@ -161,16 +161,15 @@ public class FileManager {
     private void handleFileProcessingError(Path path, Exception exception) {
         switch (exception) {
             case Mp3FileFormattingException e -> errorTracks.put(e.FILENAME, e.MESSAGE);
-            case InvalidAudioFrameException ignored -> errorTracks.put(path, FILE_CORRUPTED_ERROR.getMessage());
+            case InvalidAudioFrameException ignored -> errorTracks.put(path, FILE_CORRUPTED.getMessage());
             case FileAlreadyExistsException ignored ->
-                    errorTracks.put(path, FILE_ALREADY_EXISTS_ERROR.getMessage().formatted(SOURCE_PATH));
-            case FileSystemException ignored ->
-                    errorTracks.put(path, FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR.getMessage());
+                    errorTracks.put(path, FILE_ALREADY_EXISTS.getMessage().formatted(SOURCE_PATH));
+            case FileSystemException ignored -> errorTracks.put(path, FILE_IN_USE_BY_ANOTHER_PROCESS.getMessage());
             case org.jaudiotagger.audio.exceptions.CannotWriteException ignored ->
-                    errorTracks.put(path, FILE_ACCESS_RESTRICTED.getMessage());
+                    errorTracks.put(path, FILE_ACCESS_DENIED.getMessage());
             case null, default -> {
                 LOGGER.error("Неизвестная ошибка: ", exception);
-                errorTracks.put(path, UNKNOWN_ERROR_FORMATTING_FILE.getMessage());
+                errorTracks.put(path, UNKNOWN.getMessage());
             }
         }
     }

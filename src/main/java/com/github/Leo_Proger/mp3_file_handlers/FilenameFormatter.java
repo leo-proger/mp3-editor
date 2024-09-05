@@ -91,7 +91,7 @@ public class FilenameFormatter {
     private void replaceArtistSeparators() throws Mp3FileFormattingException {
         // Проверка того что в имени файла есть исполнители и название трека, разделенные "_-_"
         if (!newFilename.contains("_-_")) {
-            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
+            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
         // Разделяет на части с исполнителями и названием трека
@@ -117,7 +117,7 @@ public class FilenameFormatter {
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
+            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
         // Разделяет на часть с исполнителями и часть с названием трека
