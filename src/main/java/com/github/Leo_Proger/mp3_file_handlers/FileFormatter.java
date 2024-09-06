@@ -13,17 +13,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FileFormatter {
-    // Отключает логирование библиотеки jaudiotagger
+    // Disable logging of jaudiotagger library
     static {
         Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
     }
 
     /**
-     * Проверяет регулярным выражением корректность формата имени файла.
+     * Check the correctness of the filename format with regexf
      *
-     * @param filename проверяемое имя файла
-     * @return {@code true}, если имя файла соответствует ожидаемому формату и может быть
-     * обработано дальше, {@code false} в противном случае
+     * @param filename filename to check
+     * @return {@code true}, if the filename matches expected format and can be processed further, {@code false} otherwise
      * @see Config#FILENAME_FORMAT
      */
     public static boolean isValidMp3Filename(String filename) {
@@ -31,10 +30,10 @@ public class FileFormatter {
     }
 
     /**
-     * Запускает форматирование имени MP3 файла и его метаданных.
+     * Start formatting MP3 filename and its metadata
      *
-     * @param mp3File MP3 файл, который нужно отформатировать
-     * @return новый файл с отформатированными именем и метаданными
+     * @param mp3File MP3 file that needs to be formatted
+     * @return new file with formatted filename and metadata
      */
     public Path format(Path mp3File) throws Mp3FileFormattingException, CannotWriteException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
         FilenameFormatter filenameFormatter = new FilenameFormatter();

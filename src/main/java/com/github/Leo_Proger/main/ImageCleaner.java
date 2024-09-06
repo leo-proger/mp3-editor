@@ -16,9 +16,9 @@ public class ImageCleaner {
     }
 
     /**
-     * Удаляет ненужные изображения в папке (обложки для треков, которые я скачиваю из интернета).
+     * Delete useless images in the folder (covers for tracks that I download from the Internet)
      *
-     * @param targetPath папка, в которой нужно удалить изображения
+     * @param targetPath folder that needs to remove useless images
      */
     public static void deleteAllImages(Path targetPath) {
         try (Stream<Path> files = Files.list(targetPath)) {
@@ -29,7 +29,7 @@ public class ImageCleaner {
                 try {
                     Files.delete(file);
                 } catch (IOException e) {
-                    LOGGER.error("Ошибка при удалении файла \"{}\"", file.getFileName());
+                    LOGGER.error("Error deleting file \"{}\"", file.getFileName());
                 }
             });
         } catch (IOException e) {
