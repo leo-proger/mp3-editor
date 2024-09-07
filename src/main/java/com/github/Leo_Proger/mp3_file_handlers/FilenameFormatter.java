@@ -13,27 +13,28 @@ import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Fi
 
 public class FilenameFormatter {
     /**
-     * Изначальное имя файла, которое остается неизменным в течение выполнения программы.
-     * Используется для возврата сообщений об ошибках, связанных с этим файлом.
+     * Original filename which remains unchanged during execution of the program.
+     * <p>
+     * Used to return error messages related to this file.
      *
      * @see FilenameFormatter#newFilename
      */
     private String initialFile;
 
     /**
-     * Имя файла, которое копируется из initialFile.
-     * Над ним производится форматирование.
+     * Filename that is copied from initialFile.
+     * Formatting is performed on it.
      *
      * @see FilenameFormatter#initialFile
      */
     private String newFilename;
 
     /**
-     * Главный метод, запускающий все остальные методы.
+     * Main method that runs all other methods
      *
-     * @param filename имя файла, которое нужно отформатировать
-     * @return отформатированное имя
-     * @throws Mp3FileFormattingException если {@code filename} не является именем файла или оно не соответствует шаблону MP3 файла.
+     * @param filename filename to format
+     * @return formatted filename
+     * @throws Mp3FileFormattingException if {@code filename} isn't a filename, or it doesn't match the template of MP3 file
      * @see Config#FILENAME_FORMAT
      */
     public String run(String filename) throws Mp3FileFormattingException {
@@ -49,7 +50,7 @@ public class FilenameFormatter {
     }
 
     /**
-     * Заменяет символы.
+     * Replace characters
      *
      * @see Config#CHARACTERS_TO_REPLACE
      */
@@ -62,7 +63,7 @@ public class FilenameFormatter {
     }
 
     /**
-     * Удаляет рекламу, находящуюся в BLACKLIST, из имени файла.
+     * Remove ads found in BLACKLIST from filename
      *
      * @see Config#BLACKLIST
      */
@@ -74,7 +75,7 @@ public class FilenameFormatter {
     }
 
     /**
-     * Заменяет все пробелы на нижнее подчеркивание и "поправляет" запятую.
+     * Replace all spaces with underscores and correct commas
      */
     private void replaceSpacesAndFixCommas() {
         newFilename = newFilename
@@ -83,23 +84,23 @@ public class FilenameFormatter {
     }
 
     /**
-     * Заменяет все разделители, перечисленные в ARTIST_SEPARATORS, на запятую.
+     * Replace all separators listed in ARTIST_SEPARATORS with commas
      *
-     * @throws Mp3FileFormattingException если в имени файла нет "_-_".
+     * @throws Mp3FileFormattingException if filename doesn't contain "_-_"
      * @see Config#ARTIST_SEPARATORS
      */
     private void replaceArtistSeparators() throws Mp3FileFormattingException {
-        // Проверка того что в имени файла есть исполнители и название трека, разделенные "_-_"
+        // Checking that filename contains artists and song title separated by "_-_"
         if (!newFilename.contains("_-_")) {
             throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
-        // Разделяет на части с исполнителями и названием трека
+        // Divide into parts with artists and song title
         String[] parts = newFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
-        // Заменяет разделители на запятую
+        // Replace separators with comma
         for (String artistSeparator : ARTIST_SEPARATORS) {
             if (left.contains(artistSeparator)) {
                 left = left.replaceAll(artistSeparator, ", ");
@@ -110,9 +111,9 @@ public class FilenameFormatter {
 
 
     /**
-     * Ищет в имени файла ключи (некорректные имена исполнителей) и заменяет их на значения (корректные имена исполнителей).
+     * Search for keys in filename (incorrect names of artists) and replace it with values (correct names of artists)
      *
-     * @throws Mp3FileFormattingException если имя файла некорректно
+     * @throws Mp3FileFormattingException if filename is incorrect
      * @see Config#CORRECT_ARTIST_NAMES
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
@@ -120,12 +121,12 @@ public class FilenameFormatter {
             throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
-        // Разделяет на часть с исполнителями и часть с названием трека
+        // Divide into part with artists and part with song title
         String[] parts = newFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
-        // Заменяет имена исполнителей на корректные
+        // Replace name of artists with correct ones
         List<String> leftWithCorrectedArtistNames = new ArrayList<>();
         for (String artist : left.split(", ")) {
             if (CORRECT_ARTIST_NAMES.containsKey(artist.toLowerCase())) {
