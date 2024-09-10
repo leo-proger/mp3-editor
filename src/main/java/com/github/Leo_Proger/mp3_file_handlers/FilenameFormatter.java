@@ -17,17 +17,17 @@ public class FilenameFormatter {
      * <p>
      * Used to return error messages related to this file.
      *
-     * @see FilenameFormatter#newFilename
+     * @see FilenameFormatter#formattedFilename
      */
-    private String initialFile;
+    private String originalFilename;
 
     /**
      * Filename that is copied from initialFile.
      * Formatting is performed on it.
      *
-     * @see FilenameFormatter#initialFile
+     * @see FilenameFormatter#originalFilename
      */
-    private String newFilename;
+    private String formattedFilename;
 
     /**
      * Main method that runs all other methods
@@ -38,15 +38,15 @@ public class FilenameFormatter {
      * @see Config#FILENAME_FORMAT
      */
     public String run(String filename) throws Mp3FileFormattingException {
-        initialFile = newFilename = filename;
+        originalFilename = formattedFilename = filename;
 
-        replaceCharacters();
+        replaceInvalidCharacters();
         removeAds();
         replaceSpacesAndFixCommas();
-        replaceArtistSeparators();
+        replaceArtistSeparatorsWithComma();
         correctArtistNames();
 
-        return newFilename;
+        return formattedFilename;
     }
 
     /**
@@ -54,12 +54,12 @@ public class FilenameFormatter {
      *
      * @see Config#CHARACTERS_TO_REPLACE
      */
-    private void replaceCharacters() {
+    private void replaceInvalidCharacters() {
         StringBuilder result = new StringBuilder();
-        for (char c : newFilename.toCharArray()) {
+        for (char c : formattedFilename.toCharArray()) {
             result.append(CHARACTERS_TO_REPLACE.getOrDefault(String.valueOf(c), String.valueOf(c)));
         }
-        newFilename = result.toString();
+        formattedFilename = result.toString();
     }
 
     /**
@@ -68,8 +68,8 @@ public class FilenameFormatter {
      * @see Config#BLACKLIST
      */
     private void removeAds() {
-        newFilename = BLACKLIST.stream()
-                .reduce(newFilename, (str, ad) -> str.replaceAll("(?i)" + Pattern.quote(ad), ""))
+        formattedFilename = BLACKLIST.stream()
+                .reduce(formattedFilename, (str, ad) -> str.replaceAll("(?i)" + Pattern.quote(ad), ""))
                 .trim()
                 .replaceAll("(?i)[ _-]+\\.mp3$", ".mp3");
     }
@@ -78,7 +78,7 @@ public class FilenameFormatter {
      * Replace all spaces with underscores and correct commas
      */
     private void replaceSpacesAndFixCommas() {
-        newFilename = newFilename
+        formattedFilename = formattedFilename
                 .replaceAll(" ", "_")
                 .replaceAll("[\\s_]*,[\\s_]*", ", ");
     }
@@ -89,14 +89,14 @@ public class FilenameFormatter {
      * @throws Mp3FileFormattingException if filename doesn't contain "_-_"
      * @see Config#ARTIST_SEPARATORS
      */
-    private void replaceArtistSeparators() throws Mp3FileFormattingException {
+    private void replaceArtistSeparatorsWithComma() throws Mp3FileFormattingException {
         // Checking that filename contains artists and song title separated by "_-_"
-        if (!newFilename.contains("_-_")) {
-            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.INVALID_FORMAT.getMessage());
+        if (!formattedFilename.contains("_-_")) {
+            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
         // Divide into parts with artists and song title
-        String[] parts = newFilename.split("_-_");
+        String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
@@ -106,7 +106,7 @@ public class FilenameFormatter {
                 left = left.replaceAll(artistSeparator, ", ");
             }
         }
-        newFilename = left + "_-_" + right;
+        formattedFilename = left + "_-_" + right;
     }
 
 
@@ -117,12 +117,12 @@ public class FilenameFormatter {
      * @see Config#CORRECT_ARTIST_NAMES
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
-        if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.INVALID_FORMAT.getMessage());
+        if (!isValidMp3Filename(formattedFilename)) {
+            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
         // Divide into part with artists and part with song title
-        String[] parts = newFilename.split("_-_");
+        String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
@@ -137,6 +137,6 @@ public class FilenameFormatter {
                 leftWithCorrectedArtistNames.add(artist);
             }
         }
-        newFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
+        formattedFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
     }
 }
