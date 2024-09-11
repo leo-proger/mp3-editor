@@ -90,12 +90,12 @@ public class FilenameFormatter {
      * @see Config#ARTIST_SEPARATORS
      */
     private void replaceArtistSeparatorsWithComma() throws Mp3FileFormattingException {
-        // Checking that filename contains artists and song title separated by "_-_"
+        // Checking that filename contains artists and track title separated by "_-_"
         if (!formattedFilename.contains("_-_")) {
             throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
-        // Divide into parts with artists and song title
+        // Divide into parts with artists and track title
         String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
@@ -121,7 +121,7 @@ public class FilenameFormatter {
             throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
-        // Divide into part with artists and part with song title
+        // Divide into part with artists and part with track title
         String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
