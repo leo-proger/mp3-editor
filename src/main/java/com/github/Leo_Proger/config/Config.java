@@ -22,92 +22,93 @@ public class Config {
     public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+)(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+)*)(,\\s[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$'øØ]+)*)*_-_([а-яА-Яa-zA-Z0-9ёЁ()\\-_.,!$'`&øØ]+)\\.mp3$";
 
     /**
-     * Символы, которые нужно заменить в строке
+     * Characters to replace in filename
      */
     public static Map<String, String> CHARACTERS_TO_REPLACE;
 
     /**
-     * Реклама, которую нужно удалить из имени файла
+     * Ad to be removed from filename
      */
     public static Set<String> BLACKLIST;
 
     /**
-     * Ключ - некорректное имя исполнителя; значение - корректное имя исполнителя. При поиске имени исполнителя регистр не учитывается
+     * Key is incorrect artist's name; Value is correct artist's name.
+     * <p>
+     * When searching for artist's name, case is not considered
      */
     public static Map<String, String> CORRECT_ARTIST_NAMES;
 
     /**
-     * Исполнители, у которых не нужно убирать нижнее подчеркивание при добавлении в метаданные
+     * Artists who don't need to remove underscore when adding it to metadata
      */
     public static Set<String> ARTISTS_EXCLUSIONS;
 
     /**
-     * Разделители между исполнителями, которые нужно заменить на запятую, чтобы было единообразие
+     * Separators between artists that need to be replaced with a comma so that there is uniformity
      */
     public static List<String> ARTIST_SEPARATORS;
 
     /**
-     * Метод, который присваивает значения из json файлов переменным: CHARACTERS_TO_REPLACE, BLACKLIST,
-     * CORRECT_ARTIST_NAMES, ARTISTS_EXCEPTIONS, ARTIST_SEPARATORS.
+     * Method that assign values from json files to variables above
      */
     private static void loadDataFromJson() {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // Загрузка данных из characters_to_replace.json
+        // Loading data from characters_to_replace.json
         try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/characters_to_replace.json")) {
             if (stream == null) {
-                throw new RuntimeException("characters_to_replace.json не найден");
+                throw new RuntimeException("characters_to_replace.json not found");
             }
             CHARACTERS_TO_REPLACE = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
+            throw new RuntimeException("Error reading json file: " + e.getMessage());
         }
 
-        // Загрузка данных из blacklist.json
+        // Loading data from blacklist.json
         try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/blacklist.json")) {
             if (stream == null) {
-                throw new RuntimeException("blacklist.json не найден");
+                throw new RuntimeException("blacklist.json not found");
             }
             List<String> blacklistList = objectMapper.readValue(stream, new TypeReference<>() {
             });
             BLACKLIST = new HashSet<>(blacklistList);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
+            throw new RuntimeException("Error reading json file: " + e.getMessage());
         }
 
-        // Загрузка данных из correct_artist_names.json
+        // Loading data from correct_artist_names.json
         try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/correct_artist_names.json")) {
             if (stream == null) {
-                throw new RuntimeException("correct_artist_names.json не найден");
+                throw new RuntimeException("correct_artist_names.json not found");
             }
             CORRECT_ARTIST_NAMES = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
+            throw new RuntimeException("Error reading json file: " + e.getMessage());
         }
 
-        // Загрузка данных из artists_exclusions.json
+        // Loading data from artists_exclusions.json
         try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/artists_exclusions.json")) {
             if (stream == null) {
-                throw new RuntimeException("artists_exclusions.json не найден");
+                throw new RuntimeException("artists_exclusions.json not found");
             }
             List<String> artistsExclusionsList = objectMapper.readValue(stream, new TypeReference<>() {
             });
             ARTISTS_EXCLUSIONS = new HashSet<>(artistsExclusionsList);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
+            throw new RuntimeException("Error reading json file: " + e.getMessage());
         }
 
-        // Загрузка данных из artist_separators.json
+        // Loading data from artist_separators.json
         try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/artist_separators.json")) {
             if (stream == null) {
-                throw new RuntimeException("artist_separators.json не найден");
+                throw new RuntimeException("artist_separators.json not found");
             }
             ARTIST_SEPARATORS = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения json файла: " + e.getMessage());
+            throw new RuntimeException("Error reading json file: " + e.getMessage());
         }
     }
 }

@@ -16,12 +16,11 @@ public class Main {
     }
 
     /**
-     * Отсчитывает 5 секунд и выходит
+     * Count down 5 second and exit
      */
     private static void exitProgram() {
-        System.out.print("Выход через: ");
         for (int i = 5; i >= 0; i--) {
-            System.out.print("\rВыход через: " + i + " сек");
+            System.out.print("\rExit in " + i + " sec");
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {

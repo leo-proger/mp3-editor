@@ -13,119 +13,120 @@ import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Fi
 
 public class FilenameFormatter {
     /**
-     * Изначальное имя файла, которое остается неизменным в течение выполнения программы.
-     * Используется для возврата сообщений об ошибках, связанных с этим файлом.
+     * Original filename which remains unchanged during execution of the program.
+     * <p>
+     * Used to return error messages related to this file.
      *
-     * @see FilenameFormatter#newFilename
+     * @see FilenameFormatter#formattedFilename
      */
-    private String initialFile;
+    private String originalFilename;
 
     /**
-     * Имя файла, которое копируется из initialFile.
-     * Над ним производится форматирование.
+     * Filename that is copied from initialFile.
+     * Formatting is performed on it.
      *
-     * @see FilenameFormatter#initialFile
+     * @see FilenameFormatter#originalFilename
      */
-    private String newFilename;
+    private String formattedFilename;
 
     /**
-     * Главный метод, запускающий все остальные методы.
+     * Main method that runs all other methods
      *
-     * @param filename имя файла, которое нужно отформатировать
-     * @return отформатированное имя
-     * @throws Mp3FileFormattingException если {@code filename} не является именем файла или оно не соответствует шаблону MP3 файла.
+     * @param filename filename to format
+     * @return formatted filename
+     * @throws Mp3FileFormattingException if {@code filename} isn't a filename, or it doesn't match the template of MP3 file
      * @see Config#FILENAME_FORMAT
      */
     public String run(String filename) throws Mp3FileFormattingException {
-        initialFile = newFilename = filename;
+        originalFilename = formattedFilename = filename;
 
-        replaceCharacters();
+        replaceInvalidCharacters();
         removeAds();
         replaceSpacesAndFixCommas();
-        replaceArtistSeparators();
+        replaceArtistSeparatorsWithComma();
         correctArtistNames();
 
-        return newFilename;
+        return formattedFilename;
     }
 
     /**
-     * Заменяет символы.
+     * Replace characters
      *
      * @see Config#CHARACTERS_TO_REPLACE
      */
-    private void replaceCharacters() {
+    private void replaceInvalidCharacters() {
         StringBuilder result = new StringBuilder();
-        for (char c : newFilename.toCharArray()) {
+        for (char c : formattedFilename.toCharArray()) {
             result.append(CHARACTERS_TO_REPLACE.getOrDefault(String.valueOf(c), String.valueOf(c)));
         }
-        newFilename = result.toString();
+        formattedFilename = result.toString();
     }
 
     /**
-     * Удаляет рекламу, находящуюся в BLACKLIST, из имени файла.
+     * Remove ads found in BLACKLIST from filename
      *
      * @see Config#BLACKLIST
      */
     private void removeAds() {
-        newFilename = BLACKLIST.stream()
-                .reduce(newFilename, (str, ad) -> str.replaceAll("(?i)" + Pattern.quote(ad), ""))
+        formattedFilename = BLACKLIST.stream()
+                .reduce(formattedFilename, (str, ad) -> str.replaceAll("(?i)" + Pattern.quote(ad), ""))
                 .trim()
                 .replaceAll("(?i)[ _-]+\\.mp3$", ".mp3");
     }
 
     /**
-     * Заменяет все пробелы на нижнее подчеркивание и "поправляет" запятую.
+     * Replace all spaces with underscores and correct commas
      */
     private void replaceSpacesAndFixCommas() {
-        newFilename = newFilename
+        formattedFilename = formattedFilename
                 .replaceAll(" ", "_")
                 .replaceAll("[\\s_]*,[\\s_]*", ", ");
     }
 
     /**
-     * Заменяет все разделители, перечисленные в ARTIST_SEPARATORS, на запятую.
+     * Replace all separators listed in ARTIST_SEPARATORS with commas
      *
-     * @throws Mp3FileFormattingException если в имени файла нет "_-_".
+     * @throws Mp3FileFormattingException if filename doesn't contain "_-_"
      * @see Config#ARTIST_SEPARATORS
      */
-    private void replaceArtistSeparators() throws Mp3FileFormattingException {
-        // Проверка того что в имени файла есть исполнители и название трека, разделенные "_-_"
-        if (!newFilename.contains("_-_")) {
-            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
+    private void replaceArtistSeparatorsWithComma() throws Mp3FileFormattingException {
+        // Checking that filename contains artists and track title separated by "_-_"
+        if (!formattedFilename.contains("_-_")) {
+            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
-        // Разделяет на части с исполнителями и названием трека
-        String[] parts = newFilename.split("_-_");
+        // Divide into parts with artists and track title
+        String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
-        // Заменяет разделители на запятую
+        // Replace separators with comma
         for (String artistSeparator : ARTIST_SEPARATORS) {
             if (left.contains(artistSeparator)) {
                 left = left.replaceAll(artistSeparator, ", ");
             }
         }
-        newFilename = left + "_-_" + right;
+        formattedFilename = left + "_-_" + right;
     }
 
 
     /**
-     * Ищет в имени файла ключи (некорректные имена исполнителей) и заменяет их на значения (корректные имена исполнителей).
+     * Search for keys in filename (incorrect names of artists) and replace it with values (correct names of artists)
      *
-     * @throws Mp3FileFormattingException если имя файла некорректно
+     * @throws Mp3FileFormattingException if filename is incorrect
      * @see Config#CORRECT_ARTIST_NAMES
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
-        if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(Path.of(initialFile), ErrorMessage.FORMAT_INCONSISTENCY_ERROR.getMessage());
+        if (!isValidMp3Filename(formattedFilename)) {
+            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
 
-        // Разделяет на часть с исполнителями и часть с названием трека
-        String[] parts = newFilename.split("_-_");
+        // Divide into part with artists and part with track title
+        String[] parts = formattedFilename.split("_-_");
         String left = parts[0];
         String right = parts[1];
 
-        // Заменяет имена исполнителей на корректные
+        // Replace name of artists with correct ones
         List<String> leftWithCorrectedArtistNames = new ArrayList<>();
         for (String artist : left.split(", ")) {
             if (CORRECT_ARTIST_NAMES.containsKey(artist.toLowerCase())) {
@@ -136,6 +137,6 @@ public class FilenameFormatter {
                 leftWithCorrectedArtistNames.add(artist);
             }
         }
-        newFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
+        formattedFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;
     }
 }

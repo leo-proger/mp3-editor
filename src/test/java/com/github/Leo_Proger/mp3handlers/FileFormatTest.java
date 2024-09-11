@@ -41,7 +41,7 @@ public class FileFormatTest {
 
         formatter = new FileFormatter();
 
-        // Копирует все файлы из BASE_RESOURCES_PATH во временную директорию
+        // Copy all files from BASE_RESOURCES_PATH to the temporary folder
         try (var files = Files.list(BASE_RESOURCES_PATH)) {
             files.forEach(file -> {
                 try {
@@ -57,28 +57,28 @@ public class FileFormatTest {
     public void testRenameFile() throws Mp3FileFormattingException {
         FilenameFormatter filenameFormatter = new FilenameFormatter();
 
-        // Случай 1
+        // case 1
         String original1 = "lxst cxntury  ,Цой x aboba feat aboab ft. name x sosy_jopy - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3";
         String expected1 = "LXST_CXNTURY, Цой, aboba, aboab, name, sosy_jopy_-_Кончится_Лето.mp3";
 
         String formatted1 = filenameFormatter.run(original1);
         assertEquals(formatted1, expected1);
 
-        // Случай 2
+        // case 2
         String original2 = "Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video)--___(EEMUSIC.ru).mp3";
         String expected2 = "Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3";
 
         String formatted2 = filenameFormatter.run(original2);
         assertEquals(formatted2, expected2);
 
-        // Случай 3
+        // case 3
         String original3 = "Jason Paris, Amøn - Heading North.mp3";
         String expected3 = "Jason_Paris, Amon_-_Heading_North.mp3";
 
         String formatted3 = filenameFormatter.run(original3);
         assertEquals(formatted3, expected3);
 
-        // Случай 4
+        // case 4
         String[] strings = {"HXVRMXN.mp3", "HXVRMXN- .mp3", "HXVRMXN -j.mp3", "HXVRMXN-.mp3"};
         for (String string : strings) {
             assertThrows(Mp3FileFormattingException.class, () -> formatter.format(Path.of(string)));
@@ -88,7 +88,7 @@ public class FileFormatTest {
     @Test
     public void testEditMetadata() throws
             InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
-        // Форматируем файл
+        // Format the file
         Path original = tempDir.resolve("Øneheart, reidenshi - snowfall.mp3");
 
         Path formatted = formatter.format(original);
@@ -96,7 +96,7 @@ public class FileFormatTest {
         FileManager fileManager = new FileManager();
         fileManager.renameFile(original, formatted);
 
-        // Проверяем форматирование метаданных
+        // Check metadata formatting
         Mp3File mp3FileObj = new Mp3File(tempDir.resolve(original.getParent().resolve(formatted.getFileName())));
         ID3v2 tag = mp3FileObj.getId3v2Tag();
 
@@ -139,14 +139,14 @@ public class FileFormatTest {
         Path fromDir = tempDir.resolve("folder_from");
         Path toDir = tempDir.resolve("folder_to");
 
-        // Создаем папки и перемещаемый файл
+        // Create folders and the file to be moved
         Files.createDirectories(fromDir);
         Files.createDirectories(toDir);
 
         String file = "5admin_-_Silence.mp3";
         Files.createFile(fromDir.resolve(file));
 
-        // Проверяем, что файл существует в folder_from
+        // Check that the file exist in folder_form
         assertTrue(Files.exists(fromDir.resolve(file)));
 
         FileManager fileManager = new FileManager();

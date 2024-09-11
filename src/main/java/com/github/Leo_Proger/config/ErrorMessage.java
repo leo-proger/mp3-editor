@@ -1,17 +1,14 @@
 package com.github.Leo_Proger.config;
 
 public enum ErrorMessage {
-    FILE_ALREADY_EXISTS_ERROR("Файл уже существует в папке \"%s\""),
-    ERROR_MOVING_FILE("Ошибка при перемещении файла"),
-    FOLDER_INTERACTION_ERROR("Ошибка взаимодействия с папкой"),
-    FILE_FORMATTING_ERROR("Ошибка форматирования файла"),
-    FILE_CORRUPTED_ERROR("Файл поврежден"),
-    UNKNOWN_ERROR_FORMATTING_FILE("Неизвестная ошибка при форматировании файла"),
-    FOLDER_READING_ERROR("Ошибка при чтении папки"),
-    FORMAT_INCONSISTENCY_ERROR("Файл не соответствует формату и не может быть отформатирован"),
-    ERROR_DISPLAYING_MODIFIER_TRACKS("Ошибка при выводе измененных треков"),
-    FILE_IN_USE_BY_ANOTHER_PROCESS_ERROR("Файл занят другим процессом"),
-    FILE_ACCESS_RESTRICTED("Доступ к файлу ограничен");
+    FILE_ALREADY_EXISTS("File already exists in folder \"%s\""),
+    FILE_CORRUPTED("File corrupted"),
+    UNABLE_TO_MOVE_FILE("Unable to move file"),
+    UNABLE_TO_READ_FOLDER("Unable to read folder"),
+    INVALID_FORMAT("Invalid filename format"),
+    FILE_IN_USE_BY_ANOTHER_PROCESS("File in use by another process"),
+    FILE_ACCESS_DENIED("File access denied"),
+    UNKNOWN("Unknown error formatting file");
 
     private final String message;
 
