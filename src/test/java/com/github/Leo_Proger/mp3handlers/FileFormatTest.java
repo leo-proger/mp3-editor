@@ -114,8 +114,6 @@ public class FileFormatTest {
                 "VERV!X_-_Goodbye_Vol._3.mp3",
                 "TRVNSPORTER, G.P.R_Beat_-_Champion.mp3",
                 "Kungs, Cookin'_On_3_Burners_-_This_Girl.mp3",
-                "VØJ, ATSMXN_-_Criminal_Breath.mp3",
-                "KIM, Øneheart_-_NIGHTEXPRESS.mp3",
                 "_zodivk, Bearded_Legend__-_The_Wayfarer_.mp3",
         };
         for (String string : correctStrings) {
@@ -128,6 +126,8 @@ public class FileFormatTest {
                 "zodivk,Bearded_Legend_-_The_Wayfarer",
                 " zodivk, Bearded_Legend_-_The_Wayfarer.mp3",
                 "zodivk, Bearded_Legend _-_The_Wayfarer.mp3",
+                "KIM, Øneheart_-_NIGHTEXPRESS.mp3",
+                "VØJ, ATSMXN_-_Criminal_Breath.mp3"
         };
         for (String string : incorrectStrings) {
             assertFalse(FileFormatter.isValidMp3Filename(string));
