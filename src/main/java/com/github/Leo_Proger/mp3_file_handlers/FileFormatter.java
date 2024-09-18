@@ -1,6 +1,7 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
+import com.github.Leo_Proger.config.ErrorMessage;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
@@ -42,6 +43,10 @@ public class FileFormatter {
         String newFilename = filenameFormatter.run(mp3File.getFileName().toString());
         metadataFormatter.run(mp3File, newFilename);
 
+        // Final check for formatting correctness
+        if (!isValidMp3Filename(String.valueOf(newFilename))) {
+            throw new Mp3FileFormattingException(mp3File, ErrorMessage.INVALID_FORMAT.getMessage());
+        }
         return mp3File.getParent().resolve(newFilename);
     }
 }
