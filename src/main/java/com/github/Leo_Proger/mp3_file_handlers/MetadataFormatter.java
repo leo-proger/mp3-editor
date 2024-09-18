@@ -9,7 +9,9 @@ import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v1Tag;
 import org.jaudiotagger.tag.id3.ID3v24Tag;
@@ -117,16 +119,44 @@ public class MetadataFormatter {
      * @throws TagException In case of tag operations errors
      */
     private void updateTags(AudioFile audioFile, String formattedArtist, String formattedTitle) throws TagException {
-        ID3v1Tag id3v1Tag = new ID3v1Tag();
-        AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
+        Tag originalTag = audioFile.getTagOrCreateAndSetDefault();
 
+        originalTag.setField(FieldKey.ARTIST, formattedArtist);
+        originalTag.setField(FieldKey.TITLE, formattedTitle);
+
+        // Create new ID3v1 tag and copy data there
+        ID3v1Tag id3v1Tag = new ID3v1Tag();
         id3v1Tag.setArtist(formattedArtist);
         id3v1Tag.setTitle(formattedTitle);
-        audioFile.setTag(id3v1Tag);
 
+        if (originalTag.hasField(FieldKey.ALBUM)) {
+            id3v1Tag.setAlbum(originalTag.getFirst(FieldKey.ALBUM));
+        }
+        if (originalTag.hasField(FieldKey.YEAR)) {
+            id3v1Tag.setYear(originalTag.getFirst(FieldKey.YEAR));
+        }
+
+        // Create new ID3v2 tag and copy all metadata
+        AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
+        for (FieldKey fieldKey : FieldKey.values()) {
+            if (originalTag.hasField(fieldKey)) {
+
+                // Process cover art separately
+                if (fieldKey.equals(FieldKey.COVER_ART)) {
+                    TagField coverArtField = originalTag.getFirstField(FieldKey.COVER_ART);
+                    id3v2Tag.setField(coverArtField);
+                } else {
+                    id3v2Tag.setField(fieldKey, originalTag.getFirst(fieldKey));
+
+                }
+            }
+        }
+
+        // Update artist and title for ID3v2 tag
         id3v2Tag.setField(FieldKey.ARTIST, formattedArtist);
         id3v2Tag.setField(FieldKey.TITLE, formattedTitle);
-        id3v2Tag.setField(FieldKey.ARTISTS, formattedArtist);
+
+        audioFile.setTag(id3v1Tag);
         audioFile.setTag(id3v2Tag);
     }
 }

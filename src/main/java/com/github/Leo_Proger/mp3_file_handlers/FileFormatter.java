@@ -44,8 +44,8 @@ public class FileFormatter {
         metadataFormatter.run(mp3File, newFilename);
 
         // Final check for formatting correctness
-        if (!isValidMp3Filename(String.valueOf(newFilename))) {
-            throw new Mp3FileFormattingException(mp3File, ErrorMessage.INVALID_FORMAT.getMessage());
+        if (!isValidMp3Filename(newFilename)) {
+            throw new Mp3FileFormattingException(Path.of(newFilename), ErrorMessage.INVALID_FORMAT.getMessage());
         }
         return mp3File.getParent().resolve(newFilename);
     }
