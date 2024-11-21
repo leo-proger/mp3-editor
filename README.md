@@ -26,3 +26,17 @@ Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(adv
 
 \* What is in brackets is optional \
 \* Other formats are not available
+
+## Dependencies
+
+- JAudioTagger - MP3 metadata processing
+- Mp3agic - MP3 tag reading/writing (for tests)
+- JUnit Jupiter - Unit testing
+- Jackson Databind - JSON processing
+- Log4j-slf4j2 - Logging
+- JetBrains Annotations - For @NotNull annotation
+
+## Requirements
+
+- Java 21 (other version are not tested)
+- Maven

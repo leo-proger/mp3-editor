@@ -62,21 +62,21 @@ public class FileFormatTest {
         String expected1 = "LXST_CXNTURY, Цой, aboba, aboab, name, sosy_jopy_-_Кончится_Лето.mp3";
 
         String formatted1 = filenameFormatter.run(original1);
-        assertEquals(formatted1, expected1);
+        assertEquals(expected1, formatted1);
 
         // case 2
         String original2 = "Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video)--___(EEMUSIC.ru).mp3";
         String expected2 = "Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3";
 
         String formatted2 = filenameFormatter.run(original2);
-        assertEquals(formatted2, expected2);
+        assertEquals(expected2, formatted2);
 
         // case 3
         String original3 = "Jason Paris, Amøn - Heading North.mp3";
         String expected3 = "Jason_Paris, Amon_-_Heading_North.mp3";
 
         String formatted3 = filenameFormatter.run(original3);
-        assertEquals(formatted3, expected3);
+        assertEquals(expected3, formatted3);
 
         // case 4
         String[] strings = {"HXVRMXN.mp3", "HXVRMXN- .mp3", "HXVRMXN -j.mp3", "HXVRMXN-.mp3"};
@@ -100,8 +100,8 @@ public class FileFormatTest {
         Mp3File mp3FileObj = new Mp3File(tempDir.resolve(original.getParent().resolve(formatted.getFileName())));
         ID3v2 tag = mp3FileObj.getId3v2Tag();
 
-        assertEquals(tag.getArtist(), "Oneheart; reidenshi");
-        assertEquals(tag.getTitle(), "snowfall");
+        assertEquals("Oneheart; reidenshi", tag.getArtist());
+        assertEquals("snowfall", tag.getTitle());
     }
 
     @Test
