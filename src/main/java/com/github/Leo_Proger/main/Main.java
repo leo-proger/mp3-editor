@@ -4,14 +4,11 @@ import com.github.Leo_Proger.mp3_file_handlers.FileManager;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.github.Leo_Proger.config.Config.TARGET_PATH;
-
 public class Main {
     public static void main(String[] args) {
         FileManager fileManager = new FileManager();
         fileManager.run(true);
 
-        ImageCleaner.deleteAllImages(TARGET_PATH);
         exitProgram();
     }
 

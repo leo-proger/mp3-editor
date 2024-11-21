@@ -15,78 +15,48 @@
     </properties>
 
     <dependencies>
-        <!-- Для редактирования метаданных -->
         <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>3.0.1</version>
         </dependency>
-
-        <!-- Для тестов -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Для редактирования метаданных (в тестах) -->
         <dependency>
             <groupId>com.mpatric</groupId>
             <artifactId>mp3agic</artifactId>
             <version>0.9.1</version>
         </dependency>
-
-        <!-- Для определения пути к папке загрузок -->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>5.13.0</version>
         </dependency>
-
-        <!-- Для определения пути к папке загрузок -->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>5.13.0</version>
         </dependency>
-
-        <!-- Для логирования -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.13</version>
-        </dependency>
-
-        <!-- Для логирования -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.23.1</version>
-        </dependency>
-
-        <!-- Для логирования -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
             <version>2.23.1</version>
         </dependency>
-
-        <!-- Аннотация NotNull -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Для работы с JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.14.2</version>
         </dependency>
-
     </dependencies>
 
     <build>

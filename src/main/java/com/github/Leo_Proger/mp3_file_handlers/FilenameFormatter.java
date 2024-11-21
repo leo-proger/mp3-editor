@@ -102,9 +102,8 @@ public class FilenameFormatter {
 
         // Replace separators with comma
         for (String artistSeparator : ARTIST_SEPARATORS) {
-            if (left.contains(artistSeparator)) {
-                left = left.replaceAll(artistSeparator, ", ");
-            }
+            String escapedSeparator = Pattern.quote(artistSeparator);
+            left = left.replaceAll("(?i)" + escapedSeparator, ", ");
         }
         formattedFilename = left + "_-_" + right;
     }
