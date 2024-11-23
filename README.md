@@ -54,4 +54,4 @@ Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(adv
 
 ## Contacts
 
-- Telegram - https://t.me/leo_proger
+- Telegram - [Leo_Proger](https://t.me/leo_proger)
