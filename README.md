@@ -19,8 +19,14 @@ Key features:
 ## Examples
 
 - "Artist 1 - Song title.mp3" -> "Artist_1_-_Song_title.mp3"
+   - Metadata:
+      - Artist: "Artist 1"
+      - Title: "Song title"
 - "Artist 1, Artist 2 - Another Song Title (some advertising).mp3" -> "Artist_1, Artist_2_-_Another_Song_Title.mp3"
-- "Artist-Track" -> Error!
+   - Metadata:
+      - Artist: "Artist 1; Artist 2"
+      - Title: "Another Song Title"
+- "Artist-Track" -> **Error!**
 
 Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(advertising)].mp3".
 
