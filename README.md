@@ -40,3 +40,18 @@ Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(adv
 
 - Java 21 (other version are not tested)
 - Maven
+
+## Installation & Setup
+
+1. Download the latest release from [Releases](https://github.com/Leo-Proger/mp3-editor/releases)
+2. Set the following environment variables on your system
+    - `MP3_EDITOR_LOG_FOLDER` - Path for log file (e.g. `C:\mp3_editor\logs`)
+    - `MP3_EDITOR_SOURCE_PATH` - Path to input MP3 files (e.g. `C:\Users\<User>\Downloads\`)
+    - `MP3_EDITOR_TARGET_PATH` - Path for processed files (e.g. `C:\Music\`)
+3. Choose one of these methods:
+    - Double-click the executable file (`mp3_editor.exe`)
+    - Run via command line: `java -jar mp3_editor.jar`
+
+## Contacts
+
+- Telegram - https://t.me/leo_proger
