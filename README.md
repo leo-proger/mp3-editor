@@ -19,13 +19,13 @@ Key features:
 ## Examples
 
 - "Artist 1 - Song title.mp3" -> "Artist_1_-_Song_title.mp3"
-   - Metadata:
-      - Artist: "Artist 1"
-      - Title: "Song title"
+    - Metadata:
+        - Artist: "Artist 1"
+        - Title: "Song title"
 - "Artist 1, Artist 2 - Another Song Title (some advertising).mp3" -> "Artist_1, Artist_2_-_Another_Song_Title.mp3"
-   - Metadata:
-      - Artist: "Artist 1; Artist 2"
-      - Title: "Another Song Title"
+    - Metadata:
+        - Artist: "Artist 1; Artist 2"
+        - Title: "Another Song Title"
 - "Artist-Track" -> **Error!**
 
 Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(advertising)].mp3".
@@ -46,6 +46,54 @@ Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(adv
 
 - Java 21 (other version are not tested)
 - Maven
+
+## Project Structure
+
+```
+MP3 Editor
+├───src
+│   ├───main
+│   │   ├───java
+│   │   │   └───com
+│   │   │       └───github
+│   │   │           └───Leo_Proger
+│   │   │               ├───config  # Application configuration classes
+│   │   │               ├───main    # Main application entry point
+│   │   │               └───mp3_file_handlers   # MP3 file processing utilities
+│   │   └───resources
+│   │       └───com
+│   │           └───github
+│   │               └───Leo_Proger  # Project static JSON data
+│   └───test
+│       ├───java
+│       │   └───com
+│       │       └───github
+│       │           └───Leo_Proger
+│       │               └───mp3handlers   # Project unit tests
+│       └───resources
+│           └───com
+│               └───github
+│                   └───Leo_Proger
+│                       ├───folder_from   # For moving file test
+│                       └───folder_to     # For moving file test
+```
+
+### About JSON files in resources
+
+`artist_separators.json` - Defines a list of delimiters used to separate multiple artists in filename. These
+separators (like '&', 'ft.', 'feat.') will be standardized to ", " for consistent artist representation
+
+`artists_exclusions.json` - Contains a curated list of artists or band names that should be preserved exactly as they
+are
+
+`blacklist.json` - Stores patterns of common advertising or irrelevant text frequently appended to filenames. These
+snippets will be automatically removed to clean up file names
+
+`characters_to_replace.json` - Maintains a set of special characters or symbols that should be stripped from filenames
+
+`correct_artist_names.json` - A comprehensive mapping of artist name variations. Provides a way to standardize artist
+names by correcting common misspellings, alternate spellings, or formatting inconsistencies. Keys are stored in
+lowercase to ensure robust matching
 
 ## Installation & Setup
 
