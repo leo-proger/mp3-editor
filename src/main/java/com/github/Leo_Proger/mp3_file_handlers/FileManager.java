@@ -23,13 +23,13 @@ public class FileManager {
     /**
      * List of modified files
      */
-    public final List<Path> changedTracks = new LinkedList<>();
+    private final List<Path> changedTracks = new LinkedList<>();
 
     /**
      * Files that could not be formatted.
      * They cannot be moved.
      */
-    public final Map<Path, String> errorTracks = new HashMap<>();
+    private final Map<Path, String> errorTracks = new HashMap<>();
 
     /**
      * The main method starts formatting, moving MP3 files and prints a summary
