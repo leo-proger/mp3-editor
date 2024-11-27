@@ -2,6 +2,7 @@ package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
 import com.github.Leo_Proger.config.ErrorMessage;
+import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

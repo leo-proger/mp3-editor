@@ -1,9 +1,9 @@
 package com.github.Leo_Proger.mp3handlers;
 
+import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 import com.github.Leo_Proger.mp3_file_handlers.FileFormatter;
 import com.github.Leo_Proger.mp3_file_handlers.FileManager;
 import com.github.Leo_Proger.mp3_file_handlers.FilenameFormatter;
-import com.github.Leo_Proger.mp3_file_handlers.Mp3FileFormattingException;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;

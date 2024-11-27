@@ -2,6 +2,7 @@ package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
 import com.github.Leo_Proger.config.ErrorMessage;
+import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;

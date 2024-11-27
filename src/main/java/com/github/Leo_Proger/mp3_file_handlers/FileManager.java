@@ -1,6 +1,7 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
+import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

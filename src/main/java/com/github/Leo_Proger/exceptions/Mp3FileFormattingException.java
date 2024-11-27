@@ -1,4 +1,4 @@
-package com.github.Leo_Proger.mp3_file_handlers;
+package com.github.Leo_Proger.exceptions;
 
 import java.nio.file.Path;
 
