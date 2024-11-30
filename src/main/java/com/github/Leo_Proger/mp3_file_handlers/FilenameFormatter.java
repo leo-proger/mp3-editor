@@ -114,7 +114,7 @@ public class FilenameFormatter {
      * Search for keys in filename (incorrect names of artists) and replace it with values (correct names of artists)
      *
      * @throws Mp3FileFormattingException if filename is incorrect
-     * @see Config#CORRECT_ARTIST_NAMES
+     * @see Config#CORRECT_ARTISTS_NAMES
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
         if (!isValidMp3Filename(formattedFilename)) {
@@ -129,9 +129,9 @@ public class FilenameFormatter {
         // Replace name of artists with correct ones
         List<String> leftWithCorrectedArtistNames = new ArrayList<>();
         for (String artist : left.split(", ")) {
-            if (CORRECT_ARTIST_NAMES.containsKey(artist.toLowerCase())) {
+            if (CORRECT_ARTISTS_NAMES.containsKey(artist.toLowerCase())) {
                 leftWithCorrectedArtistNames.add(
-                        CORRECT_ARTIST_NAMES.getOrDefault(artist.toLowerCase(), artist.trim())
+                        CORRECT_ARTISTS_NAMES.getOrDefault(artist.toLowerCase(), artist.trim())
                 );
             } else {
                 leftWithCorrectedArtistNames.add(artist);

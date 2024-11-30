@@ -36,7 +36,7 @@ public class Config {
      * <p>
      * When searching for artist's name, case is not considered
      */
-    public static Map<String, String> CORRECT_ARTIST_NAMES;
+    public static Map<String, String> CORRECT_ARTISTS_NAMES;
 
     /**
      * Artists who don't need to remove underscore when adding it to metadata
@@ -77,12 +77,12 @@ public class Config {
             throw new RuntimeException("Error reading json file: " + e.getMessage());
         }
 
-        // Loading data from correct_artist_names.json
-        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/correct_artist_names.json")) {
+        // Loading data from correct_artists_names.json
+        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/correct_artists_names.json")) {
             if (stream == null) {
-                throw new RuntimeException("correct_artist_names.json not found");
+                throw new RuntimeException("correct_artists_names.json not found");
             }
-            CORRECT_ARTIST_NAMES = objectMapper.readValue(stream, new TypeReference<>() {
+            CORRECT_ARTISTS_NAMES = objectMapper.readValue(stream, new TypeReference<>() {
             });
         } catch (IOException e) {
             throw new RuntimeException("Error reading json file: " + e.getMessage());
