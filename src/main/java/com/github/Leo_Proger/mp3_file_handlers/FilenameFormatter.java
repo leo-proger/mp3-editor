@@ -6,7 +6,9 @@ import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.github.Leo_Proger.config.Config.*;
@@ -29,6 +31,12 @@ public class FilenameFormatter {
      * @see FilenameFormatter#originalFilename
      */
     private String formattedFilename;
+
+    private static final Set<String> newArtists = new HashSet<>();
+
+    public static Set<String> getNewArtists() {
+        return newArtists;
+    }
 
     /**
      * Main method that runs all other methods
@@ -135,6 +143,7 @@ public class FilenameFormatter {
                 );
             } else {
                 leftWithCorrectedArtistNames.add(artist);
+                newArtists.add(artist);
             }
         }
         formattedFilename = String.join(", ", leftWithCorrectedArtistNames) + "_-_" + right;

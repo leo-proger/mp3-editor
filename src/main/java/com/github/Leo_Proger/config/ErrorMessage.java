@@ -8,6 +8,9 @@ public enum ErrorMessage {
     INVALID_FILENAME_FORMAT("Invalid filename format"),
     FILE_IN_USE_BY_ANOTHER_PROCESS("File in use by another process"),
     FILE_ACCESS_DENIED("File access denied"),
+    FAILED_TO_WRITE_DATA("Failed to write data to \"%s\""),
+    FAILED_TO_READ_DATA("Failed to read data from \"%s\""),
+    INCORRECT_INPUT_FORMAT("Incorrect input format"),
     UNKNOWN("Unknown error formatting file");
 
     private final String message;
