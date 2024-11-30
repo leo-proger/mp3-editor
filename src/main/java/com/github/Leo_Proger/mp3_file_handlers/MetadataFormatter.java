@@ -69,7 +69,7 @@ public class MetadataFormatter {
      */
     private void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(mp3File, ErrorMessage.INVALID_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(mp3File, ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
         }
     }
 

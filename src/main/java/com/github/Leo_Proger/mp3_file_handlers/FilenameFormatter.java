@@ -93,7 +93,7 @@ public class FilenameFormatter {
     private void replaceArtistSeparatorsWithComma() throws Mp3FileFormattingException {
         // Checking that filename contains artists and track title separated by "_-_"
         if (!formattedFilename.contains("_-_")) {
-            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
         }
 
         // Divide into parts with artists and track title
@@ -118,7 +118,7 @@ public class FilenameFormatter {
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
         if (!isValidMp3Filename(formattedFilename)) {
-            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
         }
 
         // Divide into part with artists and part with track title

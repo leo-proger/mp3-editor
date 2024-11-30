@@ -46,7 +46,7 @@ public class FileFormatter {
 
         // Final check for formatting correctness
         if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(Path.of(newFilename), ErrorMessage.INVALID_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(Path.of(newFilename), ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
         }
         return mp3File.getParent().resolve(newFilename);
     }
