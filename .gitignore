@@ -1,5 +1,6 @@
 logs/
 dependency-reduced-pom.xml
+src/main/resources/com/github/Leo_Proger/correct_artists_names.json
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
