@@ -8,13 +8,7 @@ MP3 Editor is a tool for managing MP3 files. It performs the following functions
 - Extracts and updates file metadata
 - Moves files to the specified folder
 
-The program processes MP3 files in a folder, helping to organize digital music collections efficiently.
-
-Key features:
-
-- File name standardization
-- Metadata management
-- File organization
+The program processes MP3 files in a folder, helping to organize digital music collections.
 
 ## Examples
 
@@ -29,9 +23,11 @@ Key features:
 - "Artist-Track" -> **Error!**
 
 Only this format is supported: "Artist 1[, Artist 2, Artist x] - Song name [(advertising)].mp3".
+In the end, mp3 editor will detect new artists and offer you to add them to the file.
 
-\* What is in brackets is optional \
-\* Other formats are not available
+\* What is in square brackets is optional \
+\* Other formats are not available \
+\* Advertising to be removed is in `blacklist.json`
 
 ## Dependencies
 
@@ -93,7 +89,7 @@ snippets will be automatically removed to clean up file names
 
 `correct_artist_names.json` - A comprehensive mapping of artist name variations. Provides a way to standardize artist
 names by correcting common misspellings, alternate spellings, or formatting inconsistencies. Keys are stored in
-lowercase to ensure robust matching
+lowercase to ensure robust matching. The program will detect artists that are not in this file and offer to add them
 
 ## Installation & Setup
 
