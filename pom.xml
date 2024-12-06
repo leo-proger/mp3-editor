@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.11.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>26.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -59,7 +59,6 @@
             </resource>
         </resources>
         <plugins>
-            <!-- Maven Shade Plugin для создания JAR со всеми зависимостями -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -82,7 +81,6 @@
                 </executions>
             </plugin>
 
-            <!-- Launch4j Maven Plugin для создания EXE -->
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
