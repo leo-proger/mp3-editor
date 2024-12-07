@@ -1,12 +1,9 @@
 package com.github.Leo_Proger.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.Leo_Proger.utils.JsonManager;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,63 +49,24 @@ public class Config {
      * Method that assign values from json files to variables above
      */
     private static void loadDataFromJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-
         // Loading data from characters_to_replace.json
-        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/characters_to_replace.json")) {
-            if (stream == null) {
-                throw new RuntimeException("characters_to_replace.json not found");
-            }
-            CHARACTERS_TO_REPLACE = objectMapper.readValue(stream, new TypeReference<>() {
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading json file: " + e.getMessage());
-        }
+        CHARACTERS_TO_REPLACE = JsonManager.loadJsonFromResource("characters_to_replace.json", new TypeReference<>() {
+        });
 
         // Loading data from blacklist.json
-        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/blacklist.json")) {
-            if (stream == null) {
-                throw new RuntimeException("blacklist.json not found");
-            }
-            List<String> blacklistList = objectMapper.readValue(stream, new TypeReference<>() {
-            });
-            BLACKLIST = new HashSet<>(blacklistList);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading json file: " + e.getMessage());
-        }
+        BLACKLIST = JsonManager.loadJsonFromResource("blacklist.json", new TypeReference<>() {
+        });
 
         // Loading data from correct_artists_names.json
-        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/correct_artists_names.json")) {
-            if (stream == null) {
-                throw new RuntimeException("correct_artists_names.json not found");
-            }
-            CORRECT_ARTISTS_NAMES = objectMapper.readValue(stream, new TypeReference<>() {
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading json file: " + e.getMessage());
-        }
+        CORRECT_ARTISTS_NAMES = JsonManager.loadJsonFromResource("correct_artists_names.json", new TypeReference<>() {
+        });
 
         // Loading data from artists_exclusions.json
-        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/artists_exclusions.json")) {
-            if (stream == null) {
-                throw new RuntimeException("artists_exclusions.json not found");
-            }
-            List<String> artistsExclusionsList = objectMapper.readValue(stream, new TypeReference<>() {
-            });
-            ARTISTS_EXCLUSIONS = new HashSet<>(artistsExclusionsList);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading json file: " + e.getMessage());
-        }
+        ARTISTS_EXCLUSIONS = JsonManager.loadJsonFromResource("artists_exclusions.json", new TypeReference<>() {
+        });
 
         // Loading data from artist_separators.json
-        try (InputStream stream = Config.class.getResourceAsStream("/com/github/Leo_Proger/artist_separators.json")) {
-            if (stream == null) {
-                throw new RuntimeException("artist_separators.json not found");
-            }
-            ARTIST_SEPARATORS = objectMapper.readValue(stream, new TypeReference<>() {
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading json file: " + e.getMessage());
-        }
+        ARTIST_SEPARATORS = JsonManager.loadJsonFromResource("artist_separators.json", new TypeReference<>() {
+        });
     }
 }
