@@ -1,6 +1,7 @@
 logs/
 dependency-reduced-pom.xml
 src/main/resources/com/github/Leo_Proger/correct_artists_names.json
+mp3_editor-1.0-jar-with-dependencies.jar
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
