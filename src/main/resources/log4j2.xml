@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="LOG_FOLDER">${env:MP3_EDITOR_LOG_FOLDER}</Property>
+        <Property name="LOG_PATH">${env:MP3_EDITOR_LOG_PATH}</Property>
     </Properties>
 
     <Appenders>
@@ -9,7 +9,7 @@
             <PatternLayout pattern="%highlight{%msg%n}{TRACE=magenta}"
                            disableAnsi="false"/>
         </Console>
-        <File name="LogToFile" fileName="${LOG_FOLDER}/app.log">
+        <File name="LogToFile" fileName="${LOG_PATH}/app.log">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %c{1.} %p %m%n</Pattern>
             </PatternLayout>
