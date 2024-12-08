@@ -40,8 +40,7 @@ In the end, mp3 editor will detect new artists and offer you to add them to the 
 
 ## Requirements
 
-- Java 21 (other version are not tested)
-- Maven
+- Java Runtime Environment 21 (JRE). Other version are not tested
 
 ## Project Structure
 
@@ -56,10 +55,7 @@ MP3 Editor
 │   │   │               ├───config  # Application configuration classes
 │   │   │               ├───main    # Main application entry point
 │   │   │               └───mp3_file_handlers   # MP3 file processing utilities
-│   │   └───resources
-│   │       └───com
-│   │           └───github
-│   │               └───Leo_Proger  # Project static JSON data
+│   │   └───resources   # For resources
 │   └───test
 │       ├───java
 │       │   └───com
@@ -79,28 +75,44 @@ MP3 Editor
 `artist_separators.json` - Defines a list of delimiters used to separate multiple artists in filename. These
 separators (like '&', 'ft.', 'feat.') will be standardized to ", " for consistent artist representation
 
-`artists_exclusions.json` - Contains a curated list of artists or band names that should be preserved exactly as they
-are
+`artists_exclusions.json` - Contains a list of artists that don't need to have underscores removed when added to
+metadata: filename - "Some_Artist_Name_-_Song_Title.mp3" -> metadata artist - "Some_Artist_Name" otherwise "Some Arist
+Name".
 
 `blacklist.json` - Stores patterns of common advertising or irrelevant text frequently appended to filenames. These
 snippets will be automatically removed to clean up file names
 
 `characters_to_replace.json` - Maintains a set of special characters or symbols that should be stripped from filenames
 
-`correct_artist_names.json` - A comprehensive mapping of artist name variations. Provides a way to standardize artist
+`correct_artists_names.json` - A comprehensive mapping of artist name variations. Provides a way to standardize artist
 names by correcting common misspellings, alternate spellings, or formatting inconsistencies. Keys are stored in
 lowercase to ensure robust matching. The program will detect artists that are not in this file and offer to add them
 
 ## Installation & Setup
 
 1. Download the latest release from [Releases](https://github.com/Leo-Proger/mp3-editor/releases)
-2. Set the following environment variables on your system
-    - `MP3_EDITOR_LOG_FOLDER` - Path for log file (e.g. `C:\mp3_editor\logs`)
+2. Set in `System variables` the following environment variables on your system
+    - `MP3_EDITOR_LOG_PATH` - Path to log file (e.g. `C:\mp3_editor\logs`)
     - `MP3_EDITOR_SOURCE_PATH` - Path to input MP3 files (e.g. `C:\Users\<User>\Downloads\`)
-    - `MP3_EDITOR_TARGET_PATH` - Path for processed files (e.g. `C:\Music\`)
-3. Choose one of these methods:
-    - Double-click the executable file (`mp3_editor.exe`)
-    - Run via command line: `java -jar mp3_editor.jar`
+    - `MP3_EDITOR_TARGET_PATH` - Path to processed files (e.g. `C:\Music\`)
+    - `MP3_EDITOR_RESOURCES_PATH` - Path to [json](#about-json-files-in-resources) files (e.g.
+      `C:\mp3_editor\resources`)
+3. Run via command line: `java -jar mp3_editor.jar`
+
+\* You can find json files with presets in `resources` folder \
+\* Json filenames must match
+
+### Create .bat file to run jar file
+
+You can create .bat file for ease of launch .jar file:
+
+1. Create .bat file
+2. Paste this text into it and replace `<your_path>` with your path to .jar file
+
+```
+@echo off
+java -jar "<your_path>\mp3_editor.jar"
+```
 
 ## Contacts
 
