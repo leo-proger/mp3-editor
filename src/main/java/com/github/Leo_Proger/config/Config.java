@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class Config {
-    static {
-        loadDataFromJson();
-    }
-
+    public static final Path RESOURCES_PATH = Path.of(System.getenv("MP3_EDITOR_RESOURCES_PATH"));
     public static final Path SOURCE_PATH = Path.of(System.getenv("MP3_EDITOR_SOURCE_PATH"));
     public static final Path TARGET_PATH = Path.of(System.getenv("MP3_EDITOR_TARGET_PATH"));
+
+    static {
+        loadDataFromJsons();
+    }
 
     public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9ёЁ()\\-_.,!$'`&]+)\\.mp3$";
 
@@ -48,25 +49,20 @@ public class Config {
     /**
      * Method that assign values from json files to variables above
      */
-    private static void loadDataFromJson() {
-        // Loading data from characters_to_replace.json
-        CHARACTERS_TO_REPLACE = JsonManager.loadJsonFromResource("characters_to_replace.json", new TypeReference<>() {
+    private static void loadDataFromJsons() {
+        CHARACTERS_TO_REPLACE = JsonManager.loadDataFromResourcesJson("characters_to_replace.json", new TypeReference<>() {
         });
 
-        // Loading data from blacklist.json
-        BLACKLIST = JsonManager.loadJsonFromResource("blacklist.json", new TypeReference<>() {
+        BLACKLIST = JsonManager.loadDataFromResourcesJson("blacklist.json", new TypeReference<>() {
         });
 
-        // Loading data from correct_artists_names.json
-        CORRECT_ARTISTS_NAMES = JsonManager.loadJsonFromResource("correct_artists_names.json", new TypeReference<>() {
+        CORRECT_ARTISTS_NAMES = JsonManager.loadDataFromResourcesJson("correct_artists_names.json", new TypeReference<>() {
         });
 
-        // Loading data from artists_exclusions.json
-        ARTISTS_EXCLUSIONS = JsonManager.loadJsonFromResource("artists_exclusions.json", new TypeReference<>() {
+        ARTISTS_EXCLUSIONS = JsonManager.loadDataFromResourcesJson("artists_exclusions.json", new TypeReference<>() {
         });
 
-        // Loading data from artist_separators.json
-        ARTIST_SEPARATORS = JsonManager.loadJsonFromResource("artist_separators.json", new TypeReference<>() {
+        ARTIST_SEPARATORS = JsonManager.loadDataFromResourcesJson("artist_separators.json", new TypeReference<>() {
         });
     }
 }
