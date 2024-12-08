@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class ArtistManager {
      * @param artistsSet   A set of new artist names to be potentially added
      * @param jsonFilePath The file path of the JSON file to be updated
      */
-    public void run(Set<String> artistsSet, String jsonFilePath) {
+    public void run(Set<String> artistsSet, Path jsonFilePath) {
         if (artistsSet.isEmpty()) {
             return;
         }
@@ -61,7 +62,7 @@ public class ArtistManager {
      * @param jsonFilePath The path of the JSON file being updated
      * @return A list of user input tokens (first token is confirmation, subsequent tokens are artist indices to exclude)
      */
-    private List<String> getUserInput(String jsonFilePath) {
+    private List<String> getUserInput(Path jsonFilePath) {
         System.out.printf("""
                 Add all these to %s?
                 You can exclude any artist by specifying their number separated by a space.
@@ -96,13 +97,12 @@ public class ArtistManager {
      * @param userInput    User's input tokens
      * @param jsonFilePath Path to the JSON file to be updated
      */
-    private void processSelectedArtists(List<String> artists, List<String> userInput, String jsonFilePath) {
+    private void processSelectedArtists(List<String> artists, List<String> userInput, Path jsonFilePath) {
         try {
             removeSelectedArtists(artists, userInput);
             updateArtistsInJsonFile(artists, jsonFilePath);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             LOGGER.error(ErrorMessage.INCORRECT_INPUT_FORMAT.getMessage());
-            LOGGER.error(e.getMessage());
         }
     }
 
@@ -131,15 +131,19 @@ public class ArtistManager {
      * Updates the JSON file with new artists, preventing duplicates
      * <p>
      * Workflow:
+     * <p>
      * 1. Load existing artists from the JSON file
+     * <p>
      * 2. Convert new artists to a map with lowercase keys
+     * <p>
      * 3. Merge new artists with existing artists
+     * <p>
      * 4. Write the updated map back to the JSON file
      *
      * @param artists      List of new artists to add
      * @param jsonFilePath Path to the JSON file to be updated
      */
-    private void updateArtistsInJsonFile(List<String> artists, String jsonFilePath) {
+    private void updateArtistsInJsonFile(List<String> artists, Path jsonFilePath) {
         loadExistingArtistsFromJson(jsonFilePath)
                 .ifPresent(existingArtists -> {
                     Map<String, String> newArtists = convertToLowercaseMap(artists);
@@ -148,10 +152,9 @@ public class ArtistManager {
 
                     try {
                         JSON_MAPPER.writerWithDefaultPrettyPrinter()
-                                .writeValue(new File(jsonFilePath), existingArtists);
+                                .writeValue(new File(String.valueOf(jsonFilePath)), existingArtists);
                     } catch (IOException e) {
                         LOGGER.error(ErrorMessage.FAILED_TO_WRITE_DATA.getMessage().formatted(jsonFilePath));
-                        LOGGER.error(e.getMessage());
                     }
                 });
     }
@@ -160,8 +163,11 @@ public class ArtistManager {
      * Converts a list of artists to a map with lowercase keys.
      * <p>
      * Creates a map where:
+     * <p>
      * - Keys are lowercase versions of artist names
+     * <p>
      * - Values are the original artist names
+     * <p>
      * - In case of duplicate lowercase keys, the first value is retained
      *
      * @param artists List of artists to convert
@@ -180,23 +186,22 @@ public class ArtistManager {
      * Loads existing artists from a JSON file.
      * <p>
      * Attempts to:
-     * 1. Read the JSON file
-     * 2. Convert the JSON to a map of artists
      * <p>
-     * Handles potential IO exceptions and logs errors.
+     * 1. Read the JSON file
+     * <p>
+     * 2. Convert the JSON to a map of artists
      *
      * @param jsonFilePath Path to the JSON file to read
      * @return An Optional containing the map of artists, or an empty Optional if reading fails
      */
-    private Optional<Map<String, String>> loadExistingArtistsFromJson(String jsonFilePath) {
+    private Optional<Map<String, String>> loadExistingArtistsFromJson(Path jsonFilePath) {
         try {
-            JsonNode rootNode = JSON_MAPPER.readTree(new File(jsonFilePath));
+            JsonNode rootNode = JSON_MAPPER.readTree(new File(String.valueOf(jsonFilePath)));
             Map<String, String> artists = JSON_MAPPER.convertValue(rootNode, new TypeReference<>() {
             });
             return Optional.of(artists);
         } catch (IOException e) {
             LOGGER.error(ErrorMessage.FAILED_TO_READ_DATA.getMessage().formatted(jsonFilePath));
-            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
     }

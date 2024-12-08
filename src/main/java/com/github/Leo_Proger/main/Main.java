@@ -1,5 +1,6 @@
 package com.github.Leo_Proger.main;
 
+import com.github.Leo_Proger.config.Config;
 import com.github.Leo_Proger.mp3_file_handlers.ArtistManager;
 import com.github.Leo_Proger.mp3_file_handlers.FileManager;
 import com.github.Leo_Proger.mp3_file_handlers.FilenameFormatter;
@@ -12,7 +13,7 @@ public class Main {
         ArtistManager artistManager = new ArtistManager();
 
         fileManager.run(true);
-        artistManager.run(FilenameFormatter.getNewArtists(), "src/main/resources/com/github/Leo_Proger/correct_artists_names.json");
+        artistManager.run(FilenameFormatter.getNewArtists(), Config.RESOURCES_PATH.resolve("correct_artists_names.json"));
 
         exitProgram();
     }
