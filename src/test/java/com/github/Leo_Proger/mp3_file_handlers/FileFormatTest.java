@@ -30,7 +30,7 @@ public class FileFormatTest {
 
     @TempDir
     Path tempDir;
-    Path BASE_RESOURCES_PATH = Path.of("src/test/resources/com/github/Leo_Proger/");
+    final Path BASE_RESOURCES_PATH = Path.of("src/test/resources/com/github/Leo_Proger/");
 
     @BeforeEach
     public void setup() throws IOException {
