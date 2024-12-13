@@ -6,8 +6,13 @@
 
     <Appenders>
         <Console name="LogToConsole" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%msg%n}{TRACE=magenta}"
-                           disableAnsi="false"/>
+            <PatternLayout disableAnsi="false">
+                <Pattern>
+                    %highlight{%msg%n}{
+                    TRACE=magenta, DEBUG=cyan, iNFO=green, WARN=yellow, ERROR=red, FATAL=red
+                    }
+                </Pattern>
+            </PatternLayout>
         </Console>
         <File name="LogToFile" fileName="${LOG_PATH}/app.log">
             <PatternLayout>
@@ -18,8 +23,8 @@
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
         <Logger name="com.github.Leo_Proger" level="debug" additivity="false">
-            <AppenderRef ref="LogToConsole" level="debug"/>
-            <AppenderRef ref="LogToFile" level="info"/>
+            <AppenderRef ref="LogToConsole" level="info"/>
+            <AppenderRef ref="LogToFile" level="debug"/>
         </Logger>
         <Root level="error">
             <AppenderRef ref="LogToConsole"/>
