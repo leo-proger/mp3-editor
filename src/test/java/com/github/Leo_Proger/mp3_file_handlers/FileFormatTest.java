@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileFormatTest {
 
     private static FileFormatter formatter;
-    private static Logger LOGGER;
+    private static Logger log;
 
     @TempDir
     Path tempDir;
@@ -34,7 +34,7 @@ public class FileFormatTest {
 
     @BeforeEach
     public void setup() throws IOException {
-        LOGGER = LoggerFactory.getLogger(FileFormatTest.class);
+        log = LoggerFactory.getLogger(FileFormatTest.class);
 
         formatter = new FileFormatter();
 
@@ -44,7 +44,7 @@ public class FileFormatTest {
                 try {
                     Files.copy(file, tempDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    LOGGER.error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             });
         }

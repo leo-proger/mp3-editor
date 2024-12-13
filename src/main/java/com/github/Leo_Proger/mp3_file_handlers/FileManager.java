@@ -18,7 +18,7 @@ import static com.github.Leo_Proger.config.Config.SOURCE_PATH;
 import static com.github.Leo_Proger.config.Config.TARGET_PATH;
 
 public class FileManager {
-    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);
+    private static final Logger log = LoggerFactory.getLogger(FileManager.class);
 
     /**
      * List of modified files
@@ -58,7 +58,7 @@ public class FileManager {
 
         // Print successfully formatted files
         for (Path changedTrack : modifiedFiles) {
-            logger.info("{}. \"{}\"", ++countFiles, changedTrack.getFileName());
+            log.info("{}. \"{}\"", ++countFiles, changedTrack.getFileName());
         }
         countFiles = 0;
 
@@ -67,10 +67,10 @@ public class FileManager {
             Path errorTrack = entry.getKey();
             String errorMessage = entry.getValue();
 
-            logger.error("{}. {} - {}", ++countFiles, errorTrack.getFileName(), errorMessage);
+            log.error("{}. {} - {}", ++countFiles, errorTrack.getFileName(), errorMessage);
         }
-        logger.info("Modified files: {}", modifiedFiles.size());
-        logger.info("Error files: {}", errorTracks.size());
+        log.info("Modified files: {}", modifiedFiles.size());
+        log.info("Error files: {}", errorTracks.size());
     }
 
     /**
@@ -88,7 +88,7 @@ public class FileManager {
                     .filter(path -> path.toString().toLowerCase().endsWith(".mp3"))
                     .forEach(path -> processFile(path, allowFileMove));
         } catch (IOException e) {
-            logger.error("Unable to read dir \"{}\"", SOURCE_PATH, e);
+            log.error("Unable to read dir \"{}\"", SOURCE_PATH, e);
         }
     }
 
@@ -123,7 +123,7 @@ public class FileManager {
                 default -> e.getMessage();
             };
             errorTracks.put(path, errorMessage);
-            logger.debug("Error while processing file \"{}\"", path, e);
+            log.debug("Error while processing file \"{}\"", path, e);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.Leo_Proger.utils.JsonManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +17,7 @@ import java.util.stream.Collectors;
  * and updating a JSON file with artist information while avoiding duplicates.
  */
 public class ArtistManager {
-    private static final Logger logger = LoggerFactory.getLogger(ArtistManager.class);
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+    private static final Logger log = LoggerFactory.getLogger(ArtistManager.class);
 
     /**
      * Orchestrates the main workflow for adding new artists to a JSON file
@@ -48,7 +46,7 @@ public class ArtistManager {
     private void printArtistList(List<String> artists) {
         System.out.println("\nNew artists:");
         for (int i = 0; i < artists.size(); i++) {
-            logger.info("{}. {}", i, artists.get(i));
+            log.info("{}. {}", i, artists.get(i));
         }
         System.out.println();
     }
@@ -99,7 +97,7 @@ public class ArtistManager {
             removeSelectedArtists(artists, userInput);
             updateArtistsInJsonFile(artists, jsonFilePath);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            logger.error("Incorrect input", e);
+            log.error("Incorrect input", e);
         }
     }
 
@@ -145,7 +143,7 @@ public class ArtistManager {
         try {
             existingArtists = JsonManager.loadDataFromJson(jsonFilePath);
         } catch (IOException e) {
-            logger.error("Failed to read data from \"{}\"", jsonFilePath, e);
+            log.error("Failed to read data from \"{}\"", jsonFilePath, e);
         }
 
         Map<String, String> newArtists = convertToLowercaseMap(artists);
@@ -154,7 +152,7 @@ public class ArtistManager {
         try {
             JsonManager.writeDataToJson(existingArtists, jsonFilePath);
         } catch (IOException e) {
-            logger.error("Failed to write data to \"{}\"", jsonFilePath, e);
+            log.error("Failed to write data to \"{}\"", jsonFilePath, e);
         }
     }
 
