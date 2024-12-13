@@ -21,7 +21,7 @@ public class Main {
     /**
      * Count down 5 second and exit
      */
-    private static void exitProgram() {
+    public static void exitProgram() {
         System.out.println();
         for (int i = 5; i >= 0; i--) {
             System.out.print("\rExit in " + i + " sec");

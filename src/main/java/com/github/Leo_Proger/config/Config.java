@@ -1,6 +1,7 @@
 package com.github.Leo_Proger.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.Leo_Proger.main.Main;
 import com.github.Leo_Proger.utils.JsonManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class Config {
     /**
      * Method that assign values from json files to variables above
      */
-    private static void loadDataFromJsons() {
+    public static void loadDataFromJsons() {
         try {
             CHARACTERS_TO_REPLACE = JsonManager.loadDataFromResourcesJson("characters_to_replace.json", new TypeReference<>() {
             });
@@ -71,7 +72,7 @@ public class Config {
             });
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            System.exit(-1);
+            Main.exitProgram();
         }
     }
 }
