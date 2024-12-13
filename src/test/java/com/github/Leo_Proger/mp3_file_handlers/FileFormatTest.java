@@ -38,7 +38,7 @@ public class FileFormatTest {
 
         formatter = new FileFormatter();
 
-        // Copy all files from BASE_RESOURCES_PATH to the temporary folder
+        // Copy all files from BASE_RESOURCES_PATH to the temporary dir
         try (var files = Files.list(BASE_RESOURCES_PATH)) {
             files.forEach(file -> {
                 try {
@@ -118,7 +118,7 @@ public class FileFormatTest {
         }
 
         String[] incorrectStrings = {
-                "X:\\Folder\\Би-2_-_Полковнику_никто_не_пишет.mp3",
+                "X:\\Directory\\Би-2_-_Полковнику_никто_не_пишет.mp3",
                 "zodivk, Bearded_Legend_-_The_Wayfarer",
                 "zodivk,Bearded_Legend_-_The_Wayfarer",
                 " zodivk, Bearded_Legend_-_The_Wayfarer.mp3",
@@ -133,17 +133,17 @@ public class FileFormatTest {
 
     @Test
     public void testMoveFile() throws IOException {
-        Path fromDir = tempDir.resolve("folder_from");
-        Path toDir = tempDir.resolve("folder_to");
+        Path fromDir = tempDir.resolve("dir_from");
+        Path toDir = tempDir.resolve("dir_to");
 
-        // Create folders and the file to be moved
+        // Create dirs and the file to be moved
         Files.createDirectories(fromDir);
         Files.createDirectories(toDir);
 
         String file = "5admin_-_Silence.mp3";
         Files.createFile(fromDir.resolve(file));
 
-        // Check that the file exist in folder_form
+        // Check that the file exist in dir_form
         assertTrue(Files.exists(fromDir.resolve(file)));
 
         FileManager fileManager = new FileManager();

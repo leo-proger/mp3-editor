@@ -34,11 +34,11 @@ public class FileManager {
     /**
      * The main method starts formatting, moving MP3 files and prints a summary
      *
-     * @param moveFiles {@code true} - files are moved to target folder,
-     *                  {@code false} - files aren't move to target folder
+     * @param allowFileMove {@code true} - files will be moved to target dir,
+     *                      {@code false} - files will not be moved to target dir
      */
-    public void run(boolean moveFiles) {
-        formatAndMoveFiles(moveFiles);
+    public void run(boolean allowFileMove) {
+        formatAndMoveFiles(allowFileMove);
         printResults();
     }
 
@@ -58,8 +58,7 @@ public class FileManager {
 
         // Print successfully formatted files
         for (Path changedTrack : modifiedFiles) {
-            logger.info("{}. \"{}\"",
-                    ++countFiles, changedTrack.getFileName());
+            logger.info("{}. \"{}\"", ++countFiles, changedTrack.getFileName());
         }
         countFiles = 0;
 
@@ -77,18 +76,19 @@ public class FileManager {
     /**
      * Format and move MP3 files from SOURCE_PATH to TARGET_PATH
      *
-     * @param moveFiles {@code true} - files are moved to the target folder,
-     *                  {@code false} - files aren't moved to the target folder
+     * @param allowFileMove {@code true} - files will be moved to target dir,
+     *                      {@code false} - files will not be moved to target dir
      * @see Config#SOURCE_PATH
      * @see Config#TARGET_PATH
      */
-    private void formatAndMoveFiles(boolean moveFiles) {
+    private void formatAndMoveFiles(boolean allowFileMove) {
         try (Stream<Path> paths = Files.list(SOURCE_PATH)) {
-            paths.filter(Files::isRegularFile)
+            paths
+                    .filter(Files::isRegularFile)
                     .filter(path -> path.toString().toLowerCase().endsWith(".mp3"))
-                    .forEach(path -> processFile(path, moveFiles));
+                    .forEach(path -> processFile(path, allowFileMove));
         } catch (IOException e) {
-            logger.error("Unable to read folder \"{}\"", SOURCE_PATH, e);
+            logger.error("Unable to read dir \"{}\"", SOURCE_PATH, e);
         }
     }
 
@@ -96,8 +96,8 @@ public class FileManager {
      * Process an MP3 file
      *
      * @param path          full path to file
-     * @param allowFileMove {@code true} - files are moved to the target folder,
-     *                      {@code false} - files are not moved to the target folder
+     * @param allowFileMove {@code true} - files will be moved to target dir,
+     *                      {@code false} - files will not be moved to target dir
      */
     private void processFile(Path path, boolean allowFileMove) {
         FileFormatter formatter = new FileFormatter();
