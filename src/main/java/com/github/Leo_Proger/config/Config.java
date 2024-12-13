@@ -2,6 +2,8 @@ package com.github.Leo_Proger.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.Leo_Proger.utils.JsonManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -12,6 +14,8 @@ public class Config {
     public static final Path RESOURCES_PATH = Path.of(System.getenv("MP3_EDITOR_RESOURCES_PATH"));
     public static final Path SOURCE_PATH = Path.of(System.getenv("MP3_EDITOR_SOURCE_PATH"));
     public static final Path TARGET_PATH = Path.of(System.getenv("MP3_EDITOR_TARGET_PATH"));
+
+    private static final Logger log = LoggerFactory.getLogger(Config.class.getName());
 
     static {
         loadDataFromJsons();
@@ -50,19 +54,24 @@ public class Config {
      * Method that assign values from json files to variables above
      */
     private static void loadDataFromJsons() {
-        CHARACTERS_TO_REPLACE = JsonManager.loadDataFromResourcesJson("characters_to_replace.json", new TypeReference<>() {
-        });
+        try {
+            CHARACTERS_TO_REPLACE = JsonManager.loadDataFromResourcesJson("characters_to_replace.json", new TypeReference<>() {
+            });
 
-        BLACKLIST = JsonManager.loadDataFromResourcesJson("blacklist.json", new TypeReference<>() {
-        });
+            BLACKLIST = JsonManager.loadDataFromResourcesJson("blacklist.json", new TypeReference<>() {
+            });
 
-        CORRECT_ARTISTS_NAMES = JsonManager.loadDataFromResourcesJson("correct_artists_names.json", new TypeReference<>() {
-        });
+            CORRECT_ARTISTS_NAMES = JsonManager.loadDataFromResourcesJson("correct_artists_names.json", new TypeReference<>() {
+            });
 
-        ARTISTS_EXCLUSIONS = JsonManager.loadDataFromResourcesJson("artists_exclusions.json", new TypeReference<>() {
-        });
+            ARTISTS_EXCLUSIONS = JsonManager.loadDataFromResourcesJson("artists_exclusions.json", new TypeReference<>() {
+            });
 
-        ARTIST_SEPARATORS = JsonManager.loadDataFromResourcesJson("artist_separators.json", new TypeReference<>() {
-        });
+            ARTIST_SEPARATORS = JsonManager.loadDataFromResourcesJson("artist_separators.json", new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            System.exit(-1);
+        }
     }
 }
