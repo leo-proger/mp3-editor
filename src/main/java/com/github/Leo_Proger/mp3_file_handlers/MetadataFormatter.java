@@ -1,7 +1,6 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
-import com.github.Leo_Proger.config.ErrorMessage;
 import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -69,7 +68,7 @@ public class MetadataFormatter {
      */
     private void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(mp3File, ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(mp3File, "Invalid filename format");
         }
     }
 

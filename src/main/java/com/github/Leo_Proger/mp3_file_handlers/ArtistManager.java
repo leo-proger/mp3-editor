@@ -3,7 +3,6 @@ package com.github.Leo_Proger.mp3_file_handlers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.Leo_Proger.config.ErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  * and updating a JSON file with artist information while avoiding duplicates.
  */
 public class ArtistManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArtistManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArtistManager.class);
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     /**
@@ -51,7 +50,7 @@ public class ArtistManager {
     private void printArtistList(List<String> artists) {
         System.out.println("\nNew artists:");
         for (int i = 0; i < artists.size(); i++) {
-            LOGGER.info("{}. {}", i, artists.get(i));
+            logger.info("{}. {}", i, artists.get(i));
         }
         System.out.println();
     }
@@ -102,7 +101,7 @@ public class ArtistManager {
             removeSelectedArtists(artists, userInput);
             updateArtistsInJsonFile(artists, jsonFilePath);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            LOGGER.error(ErrorMessage.INCORRECT_INPUT_FORMAT.getMessage());
+            logger.error("Incorrect input", e);
         }
     }
 
@@ -154,7 +153,7 @@ public class ArtistManager {
                         JSON_MAPPER.writerWithDefaultPrettyPrinter()
                                 .writeValue(new File(String.valueOf(jsonFilePath)), existingArtists);
                     } catch (IOException e) {
-                        LOGGER.error(ErrorMessage.FAILED_TO_WRITE_DATA.getMessage().formatted(jsonFilePath));
+                        logger.error("Failed to write data to \"{}\"", jsonFilePath, e);
                     }
                 });
     }
@@ -201,7 +200,7 @@ public class ArtistManager {
             });
             return Optional.of(artists);
         } catch (IOException e) {
-            LOGGER.error(ErrorMessage.FAILED_TO_READ_DATA.getMessage().formatted(jsonFilePath));
+            logger.error("Failed to read data from \"{}\"", jsonFilePath, e);
             return Optional.empty();
         }
     }

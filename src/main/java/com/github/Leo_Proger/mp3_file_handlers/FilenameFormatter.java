@@ -1,7 +1,6 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
-import com.github.Leo_Proger.config.ErrorMessage;
 import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 
 import java.nio.file.Path;
@@ -95,13 +94,13 @@ public class FilenameFormatter {
     /**
      * Replace all separators listed in ARTIST_SEPARATORS with commas
      *
-     * @throws Mp3FileFormattingException if filename doesn't contain "_-_"
+     * @throws Mp3FileFormattingException if filename does not contain "_-_"
      * @see Config#ARTIST_SEPARATORS
      */
     private void replaceArtistSeparatorsWithComma() throws Mp3FileFormattingException {
         // Checking that filename contains artists and track title separated by "_-_"
         if (!formattedFilename.contains("_-_")) {
-            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(Path.of(originalFilename), "Invalid filename format");
         }
 
         // Divide into parts with artists and track title
@@ -126,7 +125,7 @@ public class FilenameFormatter {
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
         if (!isValidMp3Filename(formattedFilename)) {
-            throw new Mp3FileFormattingException(Path.of(originalFilename), ErrorMessage.INVALID_FILENAME_FORMAT.getMessage());
+            throw new Mp3FileFormattingException(Path.of(originalFilename), "Invalid filename format");
         }
 
         // Divide into part with artists and part with track title

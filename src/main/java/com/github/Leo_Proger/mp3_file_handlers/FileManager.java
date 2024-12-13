@@ -1,13 +1,13 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
 import com.github.Leo_Proger.config.Config;
-import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,15 +16,14 @@ import java.util.stream.Stream;
 
 import static com.github.Leo_Proger.config.Config.SOURCE_PATH;
 import static com.github.Leo_Proger.config.Config.TARGET_PATH;
-import static com.github.Leo_Proger.config.ErrorMessage.*;
 
 public class FileManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     /**
      * List of modified files
      */
-    private final List<Path> changedTracks = new LinkedList<>();
+    private final List<Path> modifiedFiles = new LinkedList<>();
 
     /**
      * Files that could not be formatted.
@@ -58,8 +57,8 @@ public class FileManager {
         int countFiles = 0;
 
         // Print successfully formatted files
-        for (Path changedTrack : changedTracks) {
-            LOGGER.info("{}. \"{}\"",
+        for (Path changedTrack : modifiedFiles) {
+            logger.info("{}. \"{}\"",
                     ++countFiles, changedTrack.getFileName());
         }
         countFiles = 0;
@@ -69,11 +68,10 @@ public class FileManager {
             Path errorTrack = entry.getKey();
             String errorMessage = entry.getValue();
 
-            LOGGER.error("{}. {} - \"{}\"",
-                    ++countFiles, errorMessage, errorTrack.getFileName());
+            logger.error("{}. {} - {}", ++countFiles, errorTrack.getFileName(), errorMessage);
         }
-        LOGGER.info("Modified files: {}", changedTracks.size());
-        LOGGER.info("Error files: {}", errorTracks.size());
+        logger.info("Modified files: {}", modifiedFiles.size());
+        logger.info("Error files: {}", errorTracks.size());
     }
 
     /**
@@ -90,88 +88,64 @@ public class FileManager {
                     .filter(path -> path.toString().toLowerCase().endsWith(".mp3"))
                     .forEach(path -> processFile(path, moveFiles));
         } catch (IOException e) {
-            LOGGER.debug("{}: {}\nPath: {}", e, UNABLE_TO_READ_FOLDER.getMessage(), SOURCE_PATH);
+            logger.error("Unable to read folder \"{}\"", SOURCE_PATH, e);
         }
     }
 
     /**
      * Process an MP3 file
      *
-     * @param path      full path to file
-     * @param moveFiles {@code true} - files are moved to the target folder,
-     *                  {@code false} - files aren't moved to the target folder
+     * @param path          full path to file
+     * @param allowFileMove {@code true} - files are moved to the target folder,
+     *                      {@code false} - files are not moved to the target folder
      */
-    private void processFile(Path path, boolean moveFiles) {
+    private void processFile(Path path, boolean allowFileMove) {
         FileFormatter formatter = new FileFormatter();
         Path newPath;
         try {
             newPath = formatter.format(path);
             renameFile(path, newPath);
 
-            if (moveFiles && !errorTracks.containsKey(path)) {
+            if (allowFileMove && !errorTracks.containsKey(path)) {
                 moveFile(newPath, TARGET_PATH);
             }
 
-            // Recheck that file isn't in errorTracks because moveFiles() could add it to that list
+            // Recheck that file is not in errorTracks because allowFileMove() could add it to that list
             if (!errorTracks.containsKey(newPath)) {
-                changedTracks.add(newPath);
+                modifiedFiles.add(newPath);
             }
         } catch (Exception e) {
-            handleFileProcessingError(path, e);
+            String errorMessage = switch (e.getClass().getSimpleName()) {
+                case "InvalidAudioFrameException" -> "File corrupted";
+                case "FileAlreadyExistsException" -> "File already exists in \"%s\"".formatted(TARGET_PATH);
+                case "FileSystemException" -> "File in use by another process";
+                case "CannotWriteException" -> "File access denied";
+                default -> e.getMessage();
+            };
+            errorTracks.put(path, errorMessage);
+            logger.debug("Error while processing file \"{}\"", path, e);
         }
     }
 
     /**
-     * Move file to specified folder
+     * Move file to specified dir
      *
-     * @param fromFile full path to file to be moved
-     * @param toDir    full path to folder to move file to
+     * @param file full path to file to be moved
+     * @param dir  full path to dir to move file to
      */
-    public void moveFile(Path fromFile, Path toDir) {
-        try {
-            // Move file if it doesn't exist in target folder
-            Path targetPath = toDir.resolve(fromFile.getFileName());
-            if (Files.exists(targetPath)) {
-                errorTracks.put(fromFile, FILE_ALREADY_EXISTS.getMessage().formatted(toDir));
-            } else {
-                Files.move(fromFile, targetPath);
-            }
-        } catch (IOException e) {
-            errorTracks.put(fromFile, UNABLE_TO_MOVE_FILE.getMessage());
-        }
+    public void moveFile(Path file, Path dir) throws IOException {
+        Path targetPath = dir.resolve(file.getFileName());
+        Files.move(file, targetPath);
     }
 
     /**
      * Rename file
      *
-     * @param fromName full path to current file
-     * @param toName   full path to new file with new filename
+     * @param oldName full path to current file
+     * @param newName full path to new file with new filename
      * @throws IOException errors when renaming file
      */
-    public void renameFile(Path fromName, Path toName) throws IOException {
-        Files.move(fromName, toName, StandardCopyOption.ATOMIC_MOVE);
-    }
-
-    /**
-     * Handle errors that occur during file processing and add file to errorTracks
-     *
-     * @param path      path to file that error occurred in processing
-     * @param exception exception that occurred during file processing
-     * @see FileManager#errorTracks
-     */
-    private void handleFileProcessingError(Path path, Exception exception) {
-        switch (exception) {
-            case Mp3FileFormattingException e -> errorTracks.put(e.FILENAME, e.MESSAGE);
-            case InvalidAudioFrameException ignored -> errorTracks.put(path, FILE_CORRUPTED.getMessage());
-            case FileAlreadyExistsException ignored ->
-                    errorTracks.put(path, FILE_ALREADY_EXISTS.getMessage().formatted(SOURCE_PATH));
-            case FileSystemException ignored -> errorTracks.put(path, FILE_IN_USE_BY_ANOTHER_PROCESS.getMessage());
-            case org.jaudiotagger.audio.exceptions.CannotWriteException ignored ->
-                    errorTracks.put(path, FILE_ACCESS_DENIED.getMessage());
-            case null, default -> {
-                LOGGER.error("Unknown error: ", exception);
-                errorTracks.put(path, UNKNOWN.getMessage());
-            }
-        }
+    public void renameFile(Path oldName, Path newName) throws IOException {
+        Files.move(oldName, newName, StandardCopyOption.ATOMIC_MOVE);
     }
 }

@@ -3,13 +3,14 @@ package com.github.Leo_Proger.exceptions;
 import java.nio.file.Path;
 
 public class Mp3FileFormattingException extends Exception {
-    public final Path FILENAME;
-    public final String MESSAGE;
+    private final Path filename;
 
     public Mp3FileFormattingException(Path fileName, String message) {
-        super();
+        super(message);
+        this.filename = fileName;
+    }
 
-        this.FILENAME = fileName;
-        this.MESSAGE = message;
+    public Path getFilename() {
+        return filename;
     }
 }
