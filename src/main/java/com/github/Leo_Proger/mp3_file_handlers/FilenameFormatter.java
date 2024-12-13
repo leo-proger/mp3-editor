@@ -3,7 +3,6 @@ package com.github.Leo_Proger.mp3_file_handlers;
 import com.github.Leo_Proger.config.Config;
 import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,19 +14,8 @@ import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Fi
 
 public class FilenameFormatter {
     /**
-     * Original filename which remains unchanged during execution of the program.
-     * <p>
-     * Used to return error messages related to this file.
-     *
-     * @see FilenameFormatter#formattedFilename
-     */
-    private String originalFilename;
-
-    /**
      * Filename that is copied from initialFile.
      * Formatting is performed on it.
-     *
-     * @see FilenameFormatter#originalFilename
      */
     private String formattedFilename;
 
@@ -46,7 +34,7 @@ public class FilenameFormatter {
      * @see Config#FILENAME_FORMAT
      */
     public String run(String filename) throws Mp3FileFormattingException {
-        originalFilename = formattedFilename = filename;
+        formattedFilename = filename;
 
         replaceInvalidCharacters();
         removeAds();
@@ -100,7 +88,7 @@ public class FilenameFormatter {
     private void replaceArtistSeparatorsWithComma() throws Mp3FileFormattingException {
         // Checking that filename contains artists and track title separated by "_-_"
         if (!formattedFilename.contains("_-_")) {
-            throw new Mp3FileFormattingException(Path.of(originalFilename), "Invalid filename format");
+            throw new Mp3FileFormattingException("Invalid filename format");
         }
 
         // Divide into parts with artists and track title
@@ -125,7 +113,7 @@ public class FilenameFormatter {
      */
     private void correctArtistNames() throws Mp3FileFormattingException {
         if (!isValidMp3Filename(formattedFilename)) {
-            throw new Mp3FileFormattingException(Path.of(originalFilename), "Invalid filename format");
+            throw new Mp3FileFormattingException("Invalid filename format");
         }
 
         // Divide into part with artists and part with track title

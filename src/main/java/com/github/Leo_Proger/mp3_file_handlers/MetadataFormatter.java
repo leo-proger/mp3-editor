@@ -45,7 +45,7 @@ public class MetadataFormatter {
      * @see Config#FILENAME_FORMAT
      */
     public void run(Path mp3File, String newFilename) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
-        validateFilename(mp3File, newFilename);
+        validateFilename(newFilename);
 
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
         String[] parts = splitFilename(newFilename);
@@ -61,14 +61,13 @@ public class MetadataFormatter {
     /**
      * Check the validity of MP3 file's name
      *
-     * @param mp3File     Path to MP3 file
      * @param newFilename New filename
      * @throws Mp3FileFormattingException If the filename doesn't match the pattern
      * @see Config#FILENAME_FORMAT
      */
-    private void validateFilename(Path mp3File, String newFilename) throws Mp3FileFormattingException {
+    private void validateFilename(String newFilename) throws Mp3FileFormattingException {
         if (!isValidMp3Filename(newFilename)) {
-            throw new Mp3FileFormattingException(mp3File, "Invalid filename format");
+            throw new Mp3FileFormattingException("Invalid filename format");
         }
     }
 
