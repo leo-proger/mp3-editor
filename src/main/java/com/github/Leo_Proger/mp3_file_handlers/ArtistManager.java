@@ -1,12 +1,10 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.Leo_Proger.utils.JsonManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -143,19 +141,21 @@ public class ArtistManager {
      * @param jsonFilePath Path to the JSON file to be updated
      */
     private void updateArtistsInJsonFile(List<String> artists, Path jsonFilePath) {
-        loadExistingArtistsFromJson(jsonFilePath)
-                .ifPresent(existingArtists -> {
-                    Map<String, String> newArtists = convertToLowercaseMap(artists);
+        Map<String, String> existingArtists = new HashMap<>();
+        try {
+            existingArtists = JsonManager.loadDataFromJson(jsonFilePath);
+        } catch (IOException e) {
+            logger.error("Failed to read data from \"{}\"", jsonFilePath, e);
+        }
 
-                    existingArtists.putAll(newArtists);
+        Map<String, String> newArtists = convertToLowercaseMap(artists);
+        existingArtists.putAll(newArtists);
 
-                    try {
-                        JSON_MAPPER.writerWithDefaultPrettyPrinter()
-                                .writeValue(new File(String.valueOf(jsonFilePath)), existingArtists);
-                    } catch (IOException e) {
-                        logger.error("Failed to write data to \"{}\"", jsonFilePath, e);
-                    }
-                });
+        try {
+            JsonManager.writeDataToJson(existingArtists, jsonFilePath);
+        } catch (IOException e) {
+            logger.error("Failed to write data to \"{}\"", jsonFilePath, e);
+        }
     }
 
     /**
@@ -179,29 +179,5 @@ public class ArtistManager {
                         Function.identity(),
                         (existing, replacement) -> existing
                 ));
-    }
-
-    /**
-     * Loads existing artists from a JSON file.
-     * <p>
-     * Attempts to:
-     * <p>
-     * 1. Read the JSON file
-     * <p>
-     * 2. Convert the JSON to a map of artists
-     *
-     * @param jsonFilePath Path to the JSON file to read
-     * @return An Optional containing the map of artists, or an empty Optional if reading fails
-     */
-    private Optional<Map<String, String>> loadExistingArtistsFromJson(Path jsonFilePath) {
-        try {
-            JsonNode rootNode = JSON_MAPPER.readTree(new File(String.valueOf(jsonFilePath)));
-            Map<String, String> artists = JSON_MAPPER.convertValue(rootNode, new TypeReference<>() {
-            });
-            return Optional.of(artists);
-        } catch (IOException e) {
-            logger.error("Failed to read data from \"{}\"", jsonFilePath, e);
-            return Optional.empty();
-        }
     }
 }
