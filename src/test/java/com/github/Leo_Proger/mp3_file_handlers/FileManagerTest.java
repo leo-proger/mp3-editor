@@ -1,5 +1,6 @@
 package com.github.Leo_Proger.mp3_file_handlers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -12,9 +13,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileManagerTest {
+    private FileManager fileManager;
 
     @TempDir
     Path tempDir;
+
+    @BeforeEach
+    void setUp() {
+        fileManager = new FileManager();
+    }
 
     @Test
     void renameFile_successfulRename() throws IOException {
@@ -37,7 +44,6 @@ class FileManagerTest {
         assertTrue(Files.exists(originalFile), "Original file should exist before renaming");
 
         // Perform renaming
-        FileManager fileManager = new FileManager();
         fileManager.renameFile(originalFile, newFile);
 
         // Checking the result
@@ -59,9 +65,6 @@ class FileManagerTest {
 
         Files.createFile(sourceFile);
         Files.createFile(targetFile);
-
-        // Create a FileManager
-        FileManager fileManager = new FileManager();
 
         // Checking that an attempt to rename an existing file does not throw an exception
         assertDoesNotThrow(
@@ -89,7 +92,6 @@ class FileManagerTest {
         List<Path> movedFiles = new ArrayList<>();
 
         // Create files and move them
-        FileManager fileManager = new FileManager();
         for (String fileName : testFiles) {
             Path sourceFile = sourceDir.resolve(fileName);
 
