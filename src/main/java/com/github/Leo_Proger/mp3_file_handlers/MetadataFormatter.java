@@ -49,10 +49,10 @@ public class MetadataFormatter {
 
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
         String[] parts = splitFilename(newFilename);
-        String formattedArtist = formatArtists(parts[0]);
+        String formattedArtists = formatArtists(parts[0]);
         String formattedTitle = formatTitle(parts[1]);
 
-        updateTags(audioFile, formattedArtist, formattedTitle);
+        updateTags(audioFile, formattedArtists, formattedTitle);
 
         // Save changes
         audioFile.commit();
@@ -96,7 +96,7 @@ public class MetadataFormatter {
                 artistsForMetadata.add(artist.replaceAll("_", " "));
             }
         }
-        return String.join("; ", artistsForMetadata);
+        return String.join(Config.ARTISTS_DELIMITER_IN_METADATA.getDelimiter(), artistsForMetadata);
     }
 
     /**

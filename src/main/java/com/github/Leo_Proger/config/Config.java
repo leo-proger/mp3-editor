@@ -23,6 +23,7 @@ public class Config {
     }
 
     public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9ёЁ()\\-_.,!$'`&]+)\\.mp3$";
+    public static final ArtistsDelimiterForMetadata ARTISTS_DELIMITER_IN_METADATA = ArtistsDelimiterForMetadata.SEMICOLON;
 
     /**
      * Characters to replace in filename
