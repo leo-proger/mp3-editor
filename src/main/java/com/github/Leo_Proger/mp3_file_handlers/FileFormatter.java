@@ -10,8 +10,15 @@ import org.jaudiotagger.tag.TagException;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FileFormatter {
+    // Disable logging of jaudiotagger library
+    static {
+        Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+    }
+
     /**
      * Check the correctness of the filename format with regexf
      *
