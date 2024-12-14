@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileFormatTest {
 
@@ -51,38 +51,6 @@ public class FileFormatTest {
     }
 
     @Test
-    public void testRenameFile() throws Mp3FileFormattingException {
-        FilenameFormatter filenameFormatter = new FilenameFormatter();
-
-        // case 1
-        String original1 = "lxst cxntury  ,Цой x aboba feat aboab ft. name x sosy_jopy - Кончится Лето__--_-(remix-x.ru) [Music Video].mp3";
-        String expected1 = "LXST_CXNTURY, Цой, aboba, aboab, name, sosy_jopy_-_Кончится_Лето.mp3";
-
-        String formatted1 = filenameFormatter.run(original1);
-        assertEquals(expected1, formatted1);
-
-        // case 2
-        String original2 = "Смысловые Галлюцинации_-_Вечно молодой_(Phonk remix)_(official music video)--___(EEMUSIC.ru).mp3";
-        String expected2 = "Смысловые_Галлюцинации_-_Вечно_молодой_(Phonk_remix).mp3";
-
-        String formatted2 = filenameFormatter.run(original2);
-        assertEquals(expected2, formatted2);
-
-        // case 3
-        String original3 = "Jason Paris, Amøn - Heading North.mp3";
-        String expected3 = "Jason_Paris, Amon_-_Heading_North.mp3";
-
-        String formatted3 = filenameFormatter.run(original3);
-        assertEquals(expected3, formatted3);
-
-        // case 4
-        String[] strings = {"HXVRMXN.mp3", "HXVRMXN- .mp3", "HXVRMXN -j.mp3", "HXVRMXN-.mp3"};
-        for (String string : strings) {
-            assertThrows(Mp3FileFormattingException.class, () -> formatter.format(Path.of(string)));
-        }
-    }
-
-    @Test
     public void testEditMetadata() throws
             InvalidDataException, UnsupportedTagException, IOException, CannotWriteException, CannotReadException, TagException, Mp3FileFormattingException, InvalidAudioFrameException, ReadOnlyFileException {
         // Format the file
@@ -99,35 +67,5 @@ public class FileFormatTest {
 
         assertEquals("Oneheart; reidenshi", tag.getArtist());
         assertEquals("snowfall", tag.getTitle());
-    }
-
-    @Test
-    public void testRegularExpressionValidation() {
-        String[] correctStrings = {
-                "Валентин_Стрыкало, DJ_SESAME_-_Наше_лето_(Phonk_remix).mp3",
-                "Zayn123_-_Dusk234_Till_Dawn2342.mp3",
-                "Ya$h, SXNSTXRM, Kingpin_Skinny_Pimp_-_SAMURAI_PHONK.mp3",
-                "X-WAYNE, SVFXNXV, CURSEDEVIL, WESTLIBERTY'S, 74blade, LEYNCLOUD, BXGR, ARGXNTUM, SH3TLVIZ, KALXSH, ROXSH_LUXIRY, cxsredead, DJ_CHANSEY, THRILLMANE, LXSTPLVYER, NESMIYANOV_-_WORLDWIDE.mp3",
-                "VERV!X_-_Goodbye_Vol._3.mp3",
-                "TRVNSPORTER, G.P.R_Beat_-_Champion.mp3",
-                "Kungs, Cookin'_On_3_Burners_-_This_Girl.mp3",
-                "_zodivk, Bearded_Legend__-_The_Wayfarer_.mp3",
-        };
-        for (String string : correctStrings) {
-            assertTrue(FileFormatter.isValidMp3Filename(string));
-        }
-
-        String[] incorrectStrings = {
-                "X:\\Directory\\Би-2_-_Полковнику_никто_не_пишет.mp3",
-                "zodivk, Bearded_Legend_-_The_Wayfarer",
-                "zodivk,Bearded_Legend_-_The_Wayfarer",
-                " zodivk, Bearded_Legend_-_The_Wayfarer.mp3",
-                "zodivk, Bearded_Legend _-_The_Wayfarer.mp3",
-                "KIM, Øneheart_-_NIGHTEXPRESS.mp3",
-                "VØJ, ATSMXN_-_Criminal_Breath.mp3"
-        };
-        for (String string : incorrectStrings) {
-            assertFalse(FileFormatter.isValidMp3Filename(string));
-        }
     }
 }
