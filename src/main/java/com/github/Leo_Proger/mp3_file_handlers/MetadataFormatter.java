@@ -27,28 +27,29 @@ import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Fi
 public class MetadataFormatter {
     /**
      * Add metadata (track title and artists) to MP3 file.
-     * Formatting is performed according to the following rules:
+     * Formatting performs according to the following rules:
      * <p>
-     * 1. Underscores are replaced with spaces
+     * 1. Underscores are replaced with spaces (excluding artists in ARTISTS_EXCLUSIONS)
      * <p>
-     * 2. Comma is replaced with semicolon
+     * 2. Comma is replaced with delimiter specified in ARTISTS_DELIMITER_IN_METADATA
      *
      * @param mp3File     Path to MP3 file
-     * @param newFilename New filename for metadata formatting
+     * @param filenameToParse Filename for metadata formatting
      * @throws IOException                In case of input-output errors
      * @throws CannotReadException        If the file cannot be read
      * @throws TagException               In case of tag operations errors
      * @throws InvalidAudioFrameException In case of incorrect audio frame
      * @throws ReadOnlyFileException      If the file is read-only
      * @throws CannotWriteException       If the file cannot be written to
-     * @throws Mp3FileFormattingException If the filename doesn't match the pattern
+     * @throws Mp3FileFormattingException If the filenameToParse does not match the pattern
      * @see Config#FILENAME_FORMAT
+     * @see Config#ARTISTS_DELIMITER_IN_METADATA
      */
-    public void run(Path mp3File, String newFilename) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
-        validateFilename(newFilename);
+    public void run(Path mp3File, String filenameToParse) throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, CannotWriteException, Mp3FileFormattingException {
+        validateFilename(filenameToParse);
 
         AudioFile audioFile = AudioFileIO.read(mp3File.toFile());
-        String[] parts = splitFilename(newFilename);
+        String[] parts = splitFilename(filenameToParse);
         String formattedArtists = formatArtists(parts[0]);
         String formattedTitle = formatTitle(parts[1]);
 
