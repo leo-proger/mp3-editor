@@ -40,7 +40,12 @@ In the end, mp3 editor will detect new artists and offer you to add them to the 
 
 ## Requirements
 
-- Java Runtime Environment 21 (JRE). Other version are not tested
+- For only launching
+    - Java Runtime Environment 21 (JRE). Other versions are not tested
+- For development
+    - Java 21. Other versions are not tested
+    - Maven 3.9.9
+    - [Dependencies](#dependencies)
 
 ## Project Structure
 
@@ -52,22 +57,24 @@ MP3 Editor
 │   │   │   └───com
 │   │   │       └───github
 │   │   │           └───Leo_Proger
-│   │   │               ├───config  # Application configuration classes
-│   │   │               ├───main    # Main application entry point
-│   │   │               └───mp3_file_handlers   # MP3 file processing utilities
+│   │   │               ├───config              # Application configuration classes
+│   │   │               ├───exceptions          # Custom exceptions
+│   │   │               ├───main                # Main application entry point
+│   │   │               ├───mp3_file_handlers   # MP3 file processing utilities
+│   │   │               └───utils               # Auxiliary classes
 │   │   └───resources   # For resources
 │   └───test
 │       ├───java
 │       │   └───com
 │       │       └───github
 │       │           └───Leo_Proger
-│       │               └───mp3handlers   # Project unit tests
+│       │               └───mp3_file_handlers   # Project unit tests
 │       └───resources
 │           └───com
 │               └───github
 │                   └───Leo_Proger
-│                       ├───folder_from   # For moving file test
-│                       └───folder_to     # For moving file test
+│                       ├───dir_from   # For moving file test
+│                       └───dir_to     # For moving file test
 ```
 
 ### About JSON files in resources
@@ -99,7 +106,8 @@ lowercase to ensure robust matching. The program will detect artists that are no
       `C:\mp3_editor\resources`)
 3. Run via command line: `java -jar mp3_editor.jar`
 
-\* You can find json files with presets in `resources` folder \
+\* You can find json files with presets in [resources](https://github.com/Leo-Proger/mp3-editor/tree/master/resources)
+folder \
 \* Json filenames must match
 
 ### Create .bat file to run jar file
