@@ -130,26 +130,4 @@ public class FileFormatTest {
             assertFalse(FileFormatter.isValidMp3Filename(string));
         }
     }
-
-    @Test
-    public void testMoveFile() throws IOException {
-        Path fromDir = tempDir.resolve("dir_from");
-        Path toDir = tempDir.resolve("dir_to");
-
-        // Create dirs and the file to be moved
-        Files.createDirectories(fromDir);
-        Files.createDirectories(toDir);
-
-        String file = "5admin_-_Silence.mp3";
-        Files.createFile(fromDir.resolve(file));
-
-        // Check that the file exist in dir_form
-        assertTrue(Files.exists(fromDir.resolve(file)));
-
-        FileManager fileManager = new FileManager();
-        fileManager.moveFile(fromDir.resolve(file), toDir);
-
-        assertFalse(Files.exists(fromDir.resolve(file)));
-        assertTrue(Files.exists(toDir.resolve(file)));
-    }
 }

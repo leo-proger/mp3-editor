@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -118,7 +119,7 @@ public class FileManager {
         } catch (Exception e) {
             String errorMessage = switch (e.getClass().getSimpleName()) {
                 case "InvalidAudioFrameException" -> "File corrupted";
-                case "FileAlreadyExistsException" -> "File already exists in \"%s\"".formatted(TARGET_PATH);
+//                case "FileAlreadyExistsException" -> "File already exists in \"%s\"".formatted(TARGET_PATH);
                 case "FileSystemException" -> "File in use by another process";
                 case "CannotWriteException" -> "File access denied";
                 default -> e.getMessage();
@@ -135,8 +136,11 @@ public class FileManager {
      * @param dir  full path to dir to move file to
      */
     public void moveFile(Path file, Path dir) throws IOException {
-        Path targetPath = dir.resolve(file.getFileName());
-        Files.move(file, targetPath);
+        Path newFilePath = dir.resolve(file.getFileName());
+        if (Files.exists(newFilePath)) {
+            throw new FileAlreadyExistsException("File already exists in \"%s\"".formatted(dir));
+        }
+        Files.move(file, newFilePath);
     }
 
     /**
@@ -147,6 +151,8 @@ public class FileManager {
      * @throws IOException errors when renaming file
      */
     public void renameFile(Path oldName, Path newName) throws IOException {
-        Files.move(oldName, newName, StandardCopyOption.ATOMIC_MOVE);
+        if (!oldName.equals(newName)) {
+            Files.move(oldName, newName, StandardCopyOption.ATOMIC_MOVE);
+        }
     }
 }
