@@ -14,8 +14,7 @@ import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Fi
 
 public class FilenameFormatter {
     /**
-     * Filename that is copied from initialFile.
-     * Formatting is performed on it.
+     * Formatting performs on it
      */
     private String formattedFilename;
 
@@ -30,7 +29,7 @@ public class FilenameFormatter {
      *
      * @param filename filename to format
      * @return formatted filename
-     * @throws Mp3FileFormattingException if {@code filename} isn't a filename, or it doesn't match the template of MP3 file
+     * @throws Mp3FileFormattingException if {@code filename} is not a filename, or it does not match the template of MP3 file
      * @see Config#FILENAME_FORMAT
      */
     public String run(String filename) throws Mp3FileFormattingException {
