@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.github.Leo_Proger.config.Config.SOURCE_PATH;
@@ -29,7 +26,7 @@ public class FileManager {
      * Files that could not be formatted.
      * They cannot be moved.
      */
-    private final Map<Path, String> errorTracks = new HashMap<>();
+    private final Map<Path, String> errorFiles = new HashMap<>();
 
     /**
      * The main method starts formatting, moving MP3 files and prints a summary
@@ -57,20 +54,24 @@ public class FileManager {
         int countFiles = 0;
 
         // Print successfully formatted files
-        for (Path changedTrack : modifiedFiles) {
-            log.info("{}. \"{}\"", ++countFiles, changedTrack.getFileName());
+        for (Path file : modifiedFiles) {
+            log.info("{}. \"{}\"", ++countFiles, file.getFileName());
         }
         countFiles = 0;
 
+        // Sort error files by error message
+        List<Map.Entry<Path, String>> sortedErrorEntries = new ArrayList<>(errorFiles.entrySet());
+        sortedErrorEntries.sort(Map.Entry.comparingByValue());
+
         // Print files with errors
-        for (Map.Entry<Path, String> entry : errorTracks.entrySet()) {
-            Path errorTrack = entry.getKey();
+        for (Map.Entry<Path, String> entry : sortedErrorEntries) {
+            Path errorFile = entry.getKey();
             String errorMessage = entry.getValue();
 
-            log.error("{}. {} - {}", ++countFiles, errorTrack.getFileName(), errorMessage);
+            log.error("{}. {} - {}", ++countFiles, errorFile.getFileName(), errorMessage);
         }
         log.info("Modified files: {}", modifiedFiles.size());
-        log.info("Error files: {}", errorTracks.size());
+        log.info("Error files: {}", errorFiles.size());
     }
 
     /**
@@ -106,12 +107,12 @@ public class FileManager {
             newPath = formatter.format(path);
             renameFile(path, newPath);
 
-            if (allowFileMove && !errorTracks.containsKey(path)) {
+            if (allowFileMove && !errorFiles.containsKey(path)) {
                 moveFile(newPath, TARGET_PATH);
             }
 
             // Recheck that file is not in errorTracks because allowFileMove() could add it to that list
-            if (!errorTracks.containsKey(newPath)) {
+            if (!errorFiles.containsKey(newPath)) {
                 modifiedFiles.add(newPath);
             }
         } catch (Exception e) {
@@ -122,7 +123,7 @@ public class FileManager {
                 case "CannotWriteException" -> "File access denied";
                 default -> e.getMessage();
             };
-            errorTracks.put(path, errorMessage);
+            errorFiles.put(path, errorMessage);
             log.debug("Error while processing file \"{}\"", path, e);
         }
     }
