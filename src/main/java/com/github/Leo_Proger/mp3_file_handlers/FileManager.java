@@ -119,7 +119,6 @@ public class FileManager {
         } catch (Exception e) {
             String errorMessage = switch (e.getClass().getSimpleName()) {
                 case "InvalidAudioFrameException" -> "File corrupted";
-//                case "FileAlreadyExistsException" -> "File already exists in \"%s\"".formatted(TARGET_PATH);
                 case "FileSystemException" -> "File in use by another process";
                 case "CannotWriteException" -> "File access denied";
                 default -> e.getMessage();

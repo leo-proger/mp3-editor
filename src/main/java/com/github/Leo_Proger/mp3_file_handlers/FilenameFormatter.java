@@ -4,7 +4,7 @@ import com.github.Leo_Proger.config.Config;
 import com.github.Leo_Proger.exceptions.Mp3FileFormattingException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -13,12 +13,11 @@ import static com.github.Leo_Proger.config.Config.*;
 import static com.github.Leo_Proger.mp3_file_handlers.FileFormatter.isValidMp3Filename;
 
 public class FilenameFormatter {
+    private static final Set<String> newArtists = new LinkedHashSet<>();
     /**
      * Formatting performs on it
      */
     private String formattedFilename;
-
-    private static final Set<String> newArtists = new HashSet<>();
 
     public static Set<String> getNewArtists() {
         return newArtists;
