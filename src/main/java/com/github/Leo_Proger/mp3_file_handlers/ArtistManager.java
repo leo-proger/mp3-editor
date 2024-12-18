@@ -147,7 +147,7 @@ public class ArtistManager {
         }
 
         Map<String, String> newArtists = convertToLowercaseMap(artists);
-        existingArtists.putAll(newArtists);
+        newArtists.forEach(existingArtists::putIfAbsent);
 
         try {
             JsonManager.writeDataToJson(existingArtists, jsonFilePath);
