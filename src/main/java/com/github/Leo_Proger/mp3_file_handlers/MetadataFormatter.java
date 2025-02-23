@@ -112,12 +112,14 @@ public class MetadataFormatter {
      * @param title     Formatted track title
      * @throws TagException In case of tag operations errors
      */
-    private void updateTags(AudioFile audioFile, String artist, String title) throws TagException, CannotWriteException {
+    private void updateTags(AudioFile audioFile, String artist, String title) throws TagException, CannotWriteException, CannotReadException {
         // Preserve artwork from original file if available
         Artwork artwork = null;
         if (audioFile.getTag() != null && audioFile.getTag().getFirstArtwork() != null) {
             artwork = audioFile.getTag().getFirstArtwork();
         }
+        // Delete other tags
+        audioFile.delete();
 
         // Create new ID3v24 tag and set appropriate fields
         ID3v24Tag newTag = new ID3v24Tag();
