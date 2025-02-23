@@ -20,11 +20,10 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MetadataFormatterTest {
+    final Path BASE_RESOURCES_PATH = Path.of("src/test/resources/com/github/Leo_Proger/");
     private MetadataFormatter metadataFormatter;
     private Path exampleMp3File;
     private Path exampleMp3File2;
-
-    final Path BASE_RESOURCES_PATH = Path.of("src/test/resources/com/github/Leo_Proger/");
 
     @BeforeEach
     void setUp() {
@@ -97,5 +96,41 @@ class MetadataFormatterTest {
         } catch (IOException e) {
             throw new RuntimeException("Failed to reset MP3 file metadata", e);
         }
+    }
+
+    @Test
+    void testAllOtherFieldsAreRemoved() throws Exception {
+        // Add some additional metadata fields
+        AudioFile audioFile = AudioFileIO.read(exampleMp3File.toFile());
+        Tag tag = audioFile.getTag();
+
+        // Add various fields that should be removed after formatting
+        tag.setField(FieldKey.ALBUM, "Test Album");
+        tag.setField(FieldKey.YEAR, "2024");
+        tag.setField(FieldKey.GENRE, "Electronic");
+        tag.setField(FieldKey.COMMENT, "Test Comment");
+        tag.setField(FieldKey.COMPOSER, "Test Composer");
+        audioFile.commit();
+
+        // Run metadata formatting
+        metadataFormatter.run(exampleMp3File, exampleMp3File.getFileName().toString());
+
+        // Read the file again to verify fields
+        AudioFile updatedAudioFile = AudioFileIO.read(exampleMp3File.toFile());
+        Tag updatedTag = updatedAudioFile.getTag();
+
+        // Verify that required fields are present
+        assertNotNull(updatedTag.getFirst(FieldKey.TITLE), "Title should be present");
+        assertNotNull(updatedTag.getFirst(FieldKey.ARTIST), "Artist should be present");
+        if (updatedTag.getFirstField(FieldKey.COVER_ART) != null) {
+            assertNotNull(updatedTag.getFirstField(FieldKey.COVER_ART), "Cover art should be preserved if present");
+        }
+
+        // Verify that other fields are empty or removed
+        assertTrue(updatedTag.getFirst(FieldKey.ALBUM).isEmpty(), "Album field should be empty");
+        assertTrue(updatedTag.getFirst(FieldKey.YEAR).isEmpty(), "Year field should be empty");
+        assertTrue(updatedTag.getFirst(FieldKey.GENRE).isEmpty(), "Genre field should be empty");
+        assertTrue(updatedTag.getFirst(FieldKey.COMMENT).isEmpty(), "Comment field should be empty");
+        assertTrue(updatedTag.getFirst(FieldKey.COMPOSER).isEmpty(), "Composer field should be empty");
     }
 }
