@@ -113,10 +113,14 @@ public class MetadataFormatter {
      * @throws TagException In case of tag operations errors
      */
     private void updateTags(AudioFile audioFile, String artist, String title) throws TagException, CannotWriteException, CannotReadException {
-        // Preserve artwork from original file if available
+        // Preserve artwork and lyrics from original file if available
         Artwork artwork = null;
         if (audioFile.getTag() != null && audioFile.getTag().getFirstArtwork() != null) {
             artwork = audioFile.getTag().getFirstArtwork();
+        }
+        String lyrics = "";
+        if (audioFile.getTag() != null && audioFile.getTag().getFirstField(FieldKey.LYRICS) != null) {
+            lyrics = audioFile.getTag().getFirst(FieldKey.LYRICS);
         }
         // Delete other tags
         audioFile.delete();
@@ -125,6 +129,7 @@ public class MetadataFormatter {
         ID3v24Tag newTag = new ID3v24Tag();
         newTag.setField(FieldKey.TITLE, title);
         newTag.setField(FieldKey.ARTIST, artist);
+        newTag.setField(FieldKey.LYRICS, lyrics);
 
         if (artwork != null) {
             newTag.setField(artwork);
