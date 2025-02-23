@@ -82,14 +82,12 @@ class FilenameFormatterTest {
 
     @Test
     void testCharacterReplacement() throws Mp3FileFormattingException {
-        String original = "Arist Ø name with special ø characters’ ★ _-_Song.mp3";
+        String original = "Arist Ø name with special ø characters’ ★ – Song.mp3";
         String formatted = filenameFormatter.run(original);
 
         // Verify that special characters have been replaced
-        assertFalse(formatted.contains("Ø"));
-        assertFalse(formatted.contains("ø"));
-        assertFalse(formatted.contains("★"));
         assertFalse(formatted.contains("’"));
+        assertFalse(formatted.contains("–"));
     }
 
     @Test
@@ -103,6 +101,8 @@ class FilenameFormatterTest {
                 "TRVNSPORTER, G.P.R_Beat_-_Champion.mp3",
                 "Kungs, Cookin'_On_3_Burners_-_This_Girl.mp3",
                 "_zodivk, Bearded_Legend__-_The_Wayfarer_.mp3",
+                "KIM, Øneheart_-_NIGHTEXPRESS.mp3",
+                "VØJ, ATSMXN_-_Criminal_Breath.mp3"
         };
         for (String string : correctStrings) {
             assertTrue(FileFormatter.isValidMp3Filename(string));
@@ -111,11 +111,11 @@ class FilenameFormatterTest {
         String[] incorrectStrings = {
                 "X:\\Directory\\Би-2_-_Полковнику_никто_не_пишет.mp3",
                 "zodivk, Bearded_Legend_-_The_Wayfarer",
-                "zodivk,Bearded_Legend_-_The_Wayfarer",
+                "zodivk,Bearded_Legend_-_The_Wayfarer.mp3",
                 " zodivk, Bearded_Legend_-_The_Wayfarer.mp3",
-                "zodivk, Bearded_Legend _-_The_Wayfarer.mp3",
-                "KIM, Øneheart_-_NIGHTEXPRESS.mp3",
-                "VØJ, ATSMXN_-_Criminal_Breath.mp3"
+                "zodivk, Bearded_Legend _-_The Wayfarer.mp3",
+                "zodivk, Bearded_Legend_-_ The_Wayfarer.mp3",
+                "zodivk, Bearded Legend_-_The_Wayfarer.mp3",
         };
         for (String string : incorrectStrings) {
             assertFalse(FileFormatter.isValidMp3Filename(string));

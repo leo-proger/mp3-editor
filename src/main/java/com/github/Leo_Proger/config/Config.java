@@ -22,7 +22,7 @@ public class Config {
         loadDataFromJsons();
     }
 
-    public static final String FILENAME_FORMAT = "^(([а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)*)(,\\s[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+(_[а-яА-Яa-zA-Z0-9ёЁ()\\-_.!$']+)*)*_-_([а-яА-Яa-zA-Z0-9ёЁ()\\-_.,!$'`&]+)\\.mp3$";
+    public static final String FILENAME_FORMAT = "^([^<>:\\\"/\\\\|?*\\x00-\\x1F, ]+?)(,\\s[^<>:\\\"/\\\\|?*\\x00-\\x1F, ]+)*_-_([^<>:\\\"/\\\\|?*\\x00-\\x1F ]+)\\.mp3$";
     public static final ArtistsDelimiterForMetadata ARTISTS_DELIMITER_IN_METADATA = ArtistsDelimiterForMetadata.COMMA;
 
     /**
