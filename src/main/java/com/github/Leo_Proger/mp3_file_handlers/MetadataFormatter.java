@@ -9,12 +9,9 @@ import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
-import org.jaudiotagger.tag.TagField;
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-import org.jaudiotagger.tag.id3.ID3v1Tag;
 import org.jaudiotagger.tag.id3.ID3v24Tag;
+import org.jaudiotagger.tag.images.Artwork;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,7 +30,7 @@ public class MetadataFormatter {
      * <p>
      * 2. Comma is replaced with delimiter specified in ARTISTS_DELIMITER_IN_METADATA
      *
-     * @param mp3File     Path to MP3 file
+     * @param mp3File         Path to MP3 file
      * @param filenameToParse Filename for metadata formatting
      * @throws IOException                In case of input-output errors
      * @throws CannotReadException        If the file cannot be read
@@ -54,9 +51,6 @@ public class MetadataFormatter {
         String formattedTitle = formatTitle(parts[1]);
 
         updateTags(audioFile, formattedArtists, formattedTitle);
-
-        // Save changes
-        audioFile.commit();
     }
 
     /**
@@ -113,50 +107,30 @@ public class MetadataFormatter {
     /**
      * Update audio file's tags
      *
-     * @param audioFile       AudioFile object
-     * @param formattedArtist Formatted artist string
-     * @param formattedTitle  Formatted track title
+     * @param audioFile AudioFile object
+     * @param artist    Formatted artist string
+     * @param title     Formatted track title
      * @throws TagException In case of tag operations errors
      */
-    private void updateTags(AudioFile audioFile, String formattedArtist, String formattedTitle) throws TagException {
-        Tag originalTag = audioFile.getTagOrCreateAndSetDefault();
-
-        originalTag.setField(FieldKey.ARTIST, formattedArtist);
-        originalTag.setField(FieldKey.TITLE, formattedTitle);
-
-        // Create new ID3v1 tag and copy data there
-        ID3v1Tag id3v1Tag = new ID3v1Tag();
-        id3v1Tag.setArtist(formattedArtist);
-        id3v1Tag.setTitle(formattedTitle);
-
-        if (originalTag.hasField(FieldKey.ALBUM)) {
-            id3v1Tag.setAlbum(originalTag.getFirst(FieldKey.ALBUM));
-        }
-        if (originalTag.hasField(FieldKey.YEAR)) {
-            id3v1Tag.setYear(originalTag.getFirst(FieldKey.YEAR));
+    private void updateTags(AudioFile audioFile, String artist, String title) throws TagException, CannotWriteException {
+        // Preserve artwork from original file if available
+        Artwork artwork = null;
+        if (audioFile.getTag() != null && audioFile.getTag().getFirstArtwork() != null) {
+            artwork = audioFile.getTag().getFirstArtwork();
         }
 
-        // Create new ID3v2 tag and copy all metadata
-        AbstractID3v2Tag id3v2Tag = new ID3v24Tag();
-        for (FieldKey fieldKey : FieldKey.values()) {
-            if (originalTag.hasField(fieldKey)) {
+        // Create new ID3v24 tag and set appropriate fields
+        ID3v24Tag newTag = new ID3v24Tag();
+        newTag.setField(FieldKey.TITLE, title);
+        newTag.setField(FieldKey.ARTIST, artist);
 
-                // Process cover art separately
-                if (fieldKey.equals(FieldKey.COVER_ART)) {
-                    TagField coverArtField = originalTag.getFirstField(FieldKey.COVER_ART);
-                    id3v2Tag.setField(coverArtField);
-                } else {
-                    id3v2Tag.setField(fieldKey, originalTag.getFirst(fieldKey));
-
-                }
-            }
+        if (artwork != null) {
+            newTag.setField(artwork);
         }
+        // Set new tag
+        audioFile.setTag(newTag);
 
-        // Update artist and title for ID3v2 tag
-        id3v2Tag.setField(FieldKey.ARTIST, formattedArtist);
-        id3v2Tag.setField(FieldKey.TITLE, formattedTitle);
-
-        audioFile.setTag(id3v1Tag);
-        audioFile.setTag(id3v2Tag);
+        // Save changes
+        audioFile.commit();
     }
 }
