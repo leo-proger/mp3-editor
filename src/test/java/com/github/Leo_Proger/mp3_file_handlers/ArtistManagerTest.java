@@ -23,9 +23,6 @@ public class ArtistManagerTest {
     private ArtistManager artistManager;
     private Path mockJsonFilePath;
 
-//    @Mock
-//    private Path mockPath;
-
     @BeforeEach
     public void setUp() {
         artistManager = new ArtistManager();
