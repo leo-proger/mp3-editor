@@ -11,7 +11,7 @@ MP3 Editor is a tool for managing MP3 files. It performs the following functions
 The program processes MP3 files in a folder, helping to organize digital music collections.
 
 ## Video example
-https://github.com/user-attachments/assets/b09e7e46-7313-40aa-b533-b3f0b374faad
+https://github.com/user-attachments/assets/5dfaad35-b841-45f2-9d6e-6b0a7512085a
 
 ## Examples
 
